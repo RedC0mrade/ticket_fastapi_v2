@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from pydantic import BaseModel
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent
@@ -16,10 +17,14 @@ class ApiPrefix(BaseModel):
     prefix: str = "/api"
 
 
+class DatabaseConfig(BaseModel):
+    url: PostgresDsn
+
+
 class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
-
+    db: DatabaseConfig
     # url: str = "postgresql+asyncpg://KodeUser:KodePassword@db:5432/KodeDB"
     url: str = f"sqlite+aiosqlite:///{DB_PATH}"
 
