@@ -5,7 +5,6 @@ from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent
-DB_PATH = BASE_DIR / "JuliaBars.sqlite3"
 
 
 class RunConfig(BaseModel):
@@ -21,11 +20,17 @@ class DatabaseConfig(BaseModel):
     url: PostgresDsn
     echo: bool = False
     echo_pool: bool = False
-    poll_size: int = 50
+    pool_size: int = 50
     max_overflow: int = 10
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        case_sensitive=False,
+        env_nested_delimiter="__",
+        env_prefix="FASTAPI__",
+        env_file=(".env", ".env_template")
+    )
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
@@ -40,8 +45,6 @@ class Settings(BaseSettings):
     algorithm: str = "RS256"
     access_token_expire_minute: int = 24 * 60
     access_token_refresh_days: int = 30
-
-    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()

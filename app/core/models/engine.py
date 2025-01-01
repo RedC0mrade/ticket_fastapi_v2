@@ -14,7 +14,7 @@ class DatabaseHelper:
         url: str,
         echo: bool = False,
         echo_pool: bool = False,
-        poll_size: int = 5,
+        pool_size: int = 5,
         max_overflow: int = 10,
     ) -> None:
         self.engine = create_async_engine(
@@ -22,7 +22,7 @@ class DatabaseHelper:
             echo=echo,
             echo_pool=echo_pool,
             max_overflow=max_overflow,
-            poll_size=poll_size,
+            pool_size=pool_size,
         )
         self.session_factory: async_sessionmaker[AsyncSession] = (
             async_sessionmaker(
@@ -45,6 +45,6 @@ db_helper = DatabaseHelper(
     url=str(settings.db.url),
     echo=settings.db.echo,
     echo_pool=settings.db.echo_pool,
-    poll_size=settings.db.poll_size,
+    pool_size=settings.db.pool_size,
     max_overflow=settings.db.max_overflow,
 )
