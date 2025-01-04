@@ -1,9 +1,13 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base_model import Base
-from .profile import ProfileAlchemyModel
-from .ticket import TicketAlchemyModel
+
+
+if TYPE_CHECKING:
+    from .profile import ProfileAlchemyModel
+    from .ticket import TicketAlchemyModel
 
 
 class UserAlchemyModel(Base):
