@@ -1,12 +1,13 @@
 from typing import Annotated, List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.core.schemas import Tag
-from app.core.schemas.users import UserWithId
-from app.core.schemas import Message
+from app.core.schemas.tag import Tag
+from app.core.schemas.user import UserWithId
+from app.core.schemas.message import Message
 
 
 PositiveInt = Annotated[int, Field(gt=0)]
+
 
 class Ticket(BaseModel):
 
