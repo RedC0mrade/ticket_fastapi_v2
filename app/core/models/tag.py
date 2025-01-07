@@ -30,6 +30,9 @@ class TagAlchemyModel(Base):
         self.tag_color = tag_color
         self.tag_name = tag_name
 
+    def __repr__(self) -> str:
+        return f"Tag(id={self.id}, tag_name={self.tag_name})"
+
 
 class TicketTagAssociation(Base):
     __tablename__ = "ticket_tag"
@@ -39,3 +42,12 @@ class TicketTagAssociation(Base):
 
     ticket_id: Mapped[int] = mapped_column(ForeignKey("tickets.id"))
     tag_id: Mapped[int] = mapped_column(ForeignKey("tags.id"))
+
+    def __repr__(self) -> str:
+        return (
+            f"Association("
+            f"id={self.id}, "
+            f"Association_id={self.ticket_id}, "
+            f"Association_id={self.tag_id}"
+            f")"
+        )

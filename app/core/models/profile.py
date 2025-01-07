@@ -13,4 +13,9 @@ class ProfileAlchemyModel(Base):
     lastname: Mapped[str] = mapped_column(String(30))
     birthday: Mapped[date] = mapped_column(Date)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    user: Mapped["UserAlchemyModel"] = relationship(back_populates="profile")
+    user: Mapped["UserAlchemyModel"] = relationship(
+        "UserAlchemyModel", back_populates="profile"
+    )
+
+    def __repr__(self) -> str:
+        return f"Profile(id={self.id!r}, name={self.name!r})"
