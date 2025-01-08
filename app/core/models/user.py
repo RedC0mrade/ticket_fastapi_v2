@@ -2,12 +2,15 @@ from typing import TYPE_CHECKING
 from sqlalchemy import LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+
 from .base_model import Base
 
 
 if TYPE_CHECKING:
-    from .profile import ProfileAlchemyModel
-    from .ticket import TicketAlchemyModel
+    from app.core.models.profile import ProfileAlchemyModel
+    from app.core.models.ticket import TicketAlchemyModel
+    from app.core.models.friend import FriendAlchemyModel
+    from app.core.models.follower import followerAlchemyModel
 
 
 class UserAlchemyModel(Base):
@@ -20,7 +23,14 @@ class UserAlchemyModel(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
-
+    friends: Mapped["FriendAlchemyModel"] = relationship(
+        back_populates="friend",
+        cascade="all, delete-orphan",
+    )
+    followers: Mapped["followerAlchemyModel"] = relationship(
+        back_populates="follower",
+        cascade="all, delete-orphan",
+    )
     to_do_tickets: Mapped[list["TicketAlchemyModel"]] = relationship(
         "TicketAlchemyModel",
         foreign_keys="[TicketAlchemyModel.executor_id]",

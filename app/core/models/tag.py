@@ -13,9 +13,7 @@ if TYPE_CHECKING:
 
 class TagAlchemyModel(Base):
     __tablename__ = "tags"
-    __table_args__ = (
-        UniqueConstraint("tag_name", "tag_color", name="unique_tag"),
-    )
+    c
 
     tag_name: Mapped[str] = mapped_column(String(30))
     tag_color: Mapped[str] = mapped_column(String(7))
