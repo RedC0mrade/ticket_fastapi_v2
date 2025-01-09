@@ -15,7 +15,7 @@ class UserPatch(BaseModel):
 
 
 class UserWithId(User):
-    model_config = ConfigDict(from_attributes=True)
-
     id: int
     password: bytes
+
+    model_config = ConfigDict(from_attributes=True)

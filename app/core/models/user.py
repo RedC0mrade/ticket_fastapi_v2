@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from app.core.models.profile import ProfileAlchemyModel
     from app.core.models.ticket import TicketAlchemyModel
     from app.core.models.friend import FriendAlchemyModel
-    from app.core.models.follower import followerAlchemyModel
+    from app.core.models.follower import FollowerAlchemyModel
 
 
 class UserAlchemyModel(Base):
@@ -25,10 +25,12 @@ class UserAlchemyModel(Base):
     )
     friends: Mapped["FriendAlchemyModel"] = relationship(
         back_populates="friend",
+        foreign_keys="[FriendAlchemyModel.friend_id]",
         cascade="all, delete-orphan",
     )
-    followers: Mapped["followerAlchemyModel"] = relationship(
+    followers: Mapped["FollowerAlchemyModel"] = relationship(
         back_populates="follower",
+        foreign_keys="[FollowerAlchemyModel.follower_id]",
         cascade="all, delete-orphan",
     )
     to_do_tickets: Mapped[list["TicketAlchemyModel"]] = relationship(

@@ -2,7 +2,6 @@ from pydantic import BaseModel, ConfigDict
 
 
 class Tag(BaseModel):
-
     id: int
     tag_name: str
     tag_color: str
@@ -11,13 +10,11 @@ class Tag(BaseModel):
 
 
 class CreateTag(BaseModel):
-
     tag_name: str
     tag_color: str
 
 
 class Association(BaseModel):
-
     tag_id: int
     ticket_id: int
 

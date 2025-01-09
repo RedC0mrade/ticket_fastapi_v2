@@ -10,7 +10,6 @@ PositiveInt = Annotated[int, Field(gt=0)]
 
 
 class Ticket(BaseModel):
-
     id: int
     ticket_name: str
     messages: Optional[List[Message]] = None
@@ -25,16 +24,14 @@ class Ticket(BaseModel):
 
 
 class CreateTicket(BaseModel):
-
     ticket_name: str
     message: str
-    amount: int = Field(..., gt=0)
+    amount: PositiveInt
     acceptor_id: PositiveInt
     tags_id: list[PositiveInt]
 
 
 class UpdateTicket(BaseModel):
-
     message: str | None = None
     amount: PositiveInt | None = None
     tags_id: list[PositiveInt] | None = None
