@@ -1,11 +1,11 @@
 from sqlalchemy import ForeignKey, UniqueConstraint
-from pydantic import BaseModel
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .user import UserAlchemyModel
+from .base_model import Base
 
 
-class FriendAlchemyModel(BaseModel):
+class FriendAlchemyModel(Base):
     __tablename__ = "friends"
     __table_args__ = (
         UniqueConstraint("user_id", "friend_id", name="unique_friend"),
@@ -17,3 +17,8 @@ class FriendAlchemyModel(BaseModel):
         back_populates="frends",
         lazy="selectin",
     )
+
+    def __repr__(self) -> str:
+        return (
+            f"FriendAlchemyModel(id={self.id!r}, friend_id={self.friend_id!r})"
+        )

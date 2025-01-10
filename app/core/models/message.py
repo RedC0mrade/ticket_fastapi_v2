@@ -18,3 +18,6 @@ class MessageAlchemyModel(Base):
     ticket: Mapped["TicketAlchemyModel"] = relationship(
         "TicketAlchemyModel", back_populates="messages"
     )
+
+    def __repr__(self) -> str:
+        return f"MessageAlchemyModel(id={self.id!r}, message={self.message!r})"

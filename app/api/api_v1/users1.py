@@ -12,8 +12,8 @@ router = APIRouter(tags=["Users"])
 def get_user_service(
     session: AsyncSession = Depends(db_helper.session_getter),
 ) -> UserService:
-    """Зависимость для получения экземпляра UserService."""
-    return UserService(session=session)
+    """Фабрика для получения экземпляра UserService."""
+    return UserService(session)
 
 
 @router.get("/", response_model=list[UserWithId])
@@ -29,12 +29,10 @@ def get_me(user: User = Depends(current_auth_user)):
 @router.get("/{user_id}", response_model=UserWithId)
 async def get_user(
     user_id: int,
+    user: User = Depends(current_auth_user),
     user_service: UserService = Depends(get_user_service),
 ):
-    user = await user_service.get_user(user_id)
-    if user is None:
-        return Response(status_code=404, content="User not found")
-    return user
+    return await user_service.get_user(user_id=user_id)
 
 
 @router.post("/", response_model=UserWithId, status_code=201)
@@ -42,7 +40,7 @@ async def create_user(
     user_create: User,
     user_service: UserService = Depends(get_user_service),
 ):
-    return await user_service.create_user(user_create)
+    return await user_service.create_user(user_in=user_create)
 
 
 @router.put("/{user_id}", response_model=User)
@@ -52,7 +50,7 @@ async def put_user(
     user_service: UserService = Depends(get_user_service),
 ):
     result: dict = await user_service.put_user(
-        user_in=user_in, user_id=user_id
+        user_id=user_id, user_in=user_in
         )
     return Response(status_code=200, content=f"data changed {result}")
 
@@ -64,7 +62,7 @@ async def patch_user(
     user_service: UserService = Depends(get_user_service),
 ):
     result: dict = await user_service.patch_user(
-        user_in=user_in, user_id=user_id
+        user_id=user_id, user_in=user_in
     )
     return Response(status_code=200, content=f"data changed {result}")
 
@@ -75,4 +73,3 @@ async def delete_user(
     user_service: UserService = Depends(get_user_service),
 ):
     await user_service.delete_user(user_id=user_id)
-    return Response(status_code=204)
