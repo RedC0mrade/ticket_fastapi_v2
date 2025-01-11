@@ -16,6 +16,7 @@ class FollowerAlchemyModel(Base):
         "UserAlchemyModel",
         back_populates="followers",
         lazy="selectin",
+        foreign_keys=[follower_id],
     )
 
     def __repr__(self) -> str:

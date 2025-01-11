@@ -14,8 +14,9 @@ class FriendAlchemyModel(Base):
     friend_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     friend: Mapped["UserAlchemyModel"] = relationship(
         "UserAlchemyModel",
-        back_populates="frends",
+        back_populates="friends",
         lazy="selectin",
+        foreign_keys=[friend_id],
     )
 
     def __repr__(self) -> str:

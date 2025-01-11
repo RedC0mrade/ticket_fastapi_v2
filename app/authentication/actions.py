@@ -31,13 +31,18 @@ async def user_validate(
     if not user:
 
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="ivalid username"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="ivalid username",
         )
 
-    if not validate_password(password=password, hashed_password=user.password):
+    if not validate_password(
+        password=password,
+        hashed_password=user.password,
+    ):
 
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="ivalid password"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="ivalid password",
         )
 
     return user
