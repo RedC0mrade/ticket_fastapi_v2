@@ -9,7 +9,8 @@ async def validate_user(
 ) -> UserAlchemyModel:
 
     searched_user: UserAlchemyModel | None = await session.get(
-        UserAlchemyModel, user_id
+        UserAlchemyModel,
+        user_id,
     )
 
     if not searched_user:
