@@ -4,10 +4,8 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
-from app.messages.crud import delete_all_messages
 from app.core.schemas.user import UserWithId
 from app.core.models.tag import TicketTagAssociation
-from app.messages.crud import add_message
 from app.core.schemas.ticket import CreateTicket, UpdateTicket
 from app.core.models.ticket import TicketAlchemyModel
 from app.validators.tag import validate_tags_in_base
@@ -35,17 +33,15 @@ class TicketService:
         stmt = select(TicketAlchemyModel).where(
             TicketAlchemyModel.acceptor_id == self.user.id
         )
-        result: Result = await session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         tickets = result.scalars().all()
         return list(tickets)
 
     async def create_ticket(
         self,
         ticket_in: CreateTicket,
-        user: UserWithId,
-        session: AsyncSession,
     ) -> TicketAlchemyModel:
-        if user.id == ticket_in.acceptor_id:
+        if self.user.id == ticket_in.acceptor_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="You can't create ticket to your self",
@@ -55,40 +51,38 @@ class TicketService:
             and_(
                 TicketAlchemyModel.ticket_name == ticket_in.ticket_name,
                 TicketAlchemyModel.acceptor_id == ticket_in.acceptor_id,
-                TicketAlchemyModel.executor_id == user.id,
+                TicketAlchemyModel.executor_id == self.user.id,
             )
         )
-        result: Result = await session.execute(check_stmt)
+        result: Result = await self.session.execute(check_stmt)
         check_ticket: TicketAlchemyModel = result.scalar_one_or_none()
 
         if check_ticket:
-            return await add_to_existing_tickets(
+            return await self.add_to_existing_tickets(
                 ticket=check_ticket,
-                user=user,
                 ticket_in=ticket_in,
-                session=session,
             )
 
         ticket = TicketAlchemyModel(
             ticket_name=ticket_in.ticket_name,
             amount=ticket_in.amount,
             acceptor_id=ticket_in.acceptor_id,
-            executor_id=user.id,
+            executor_id=self.user.id,
         )
-        session.add(ticket)
-        await session.flush()
+        self.session.add(ticket)
+        await self.session.flush()
 
         await add_message(
             message=ticket_in.message,
-            user=user,
+            user=self.user,
             ticket_id=ticket.id,
-            session=session,
+            session=self.session,
         )
 
         if ticket_in.tags_id:
             await validate_tags_in_base(
                 tags=ticket_in.tags_id,
-                session=session,
+                session=self.session,
             )
             associations = [
                 TicketTagAssociation(
@@ -97,30 +91,28 @@ class TicketService:
                 )
                 for tag in ticket_in.tags_id
             ]
-            session.add_all(associations)
+            self.session.add_all(associations)
 
-        await session.commit()
-        await session.refresh(ticket)
+        await self.session.commit()
+        await self.session.refresh(ticket)
 
         return ticket
 
     async def ticker_done(
         self,
         ticket_id: int,
-        acceptor: UserWithId,
-        session: AsyncSession,
     ) -> TicketAlchemyModel | None:
 
         stmt = select(TicketAlchemyModel.amount).where(
             TicketAlchemyModel.id == ticket_id,
-            TicketAlchemyModel.acceptor_id == acceptor.id,
+            TicketAlchemyModel.acceptor_id == self.user.id,
         )
-        result: Result = await session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         ticket: int = result.scalar_one_or_none()
         if not ticket:
             return None
         elif ticket <= 1:
-            await delete_ticket(ticket_id=ticket_id, session=session)
+            await self.delete_ticket(ticket_id=ticket_id)
             return None
 
         ticket_done = (
@@ -128,9 +120,9 @@ class TicketService:
             .where(TicketAlchemyModel.id == ticket_id)
             .values({"amount": ticket - 1})
         )
-        await session.execute(ticket_done)
-        await session.commit()
-        refresh_ticket: TicketAlchemyModel = await session.get(
+        await self.session.execute(ticket_done)
+        await self.session.commit()
+        refresh_ticket: TicketAlchemyModel = await self.session.get(
             TicketAlchemyModel,
             ticket_id,
         )
@@ -140,16 +132,12 @@ class TicketService:
     async def add_to_existing_tickets(
         self,
         ticket: TicketAlchemyModel,
-        user: UserWithId,
         ticket_in: CreateTicket,
-        session: AsyncSession,
     ) -> TicketAlchemyModel:
 
         add_message(
             message=ticket_in.message,
-            user=user,
             ticket_id=ticket.id,
-            session=session,
         )
 
         ticket.amount += ticket_in.amount
@@ -157,45 +145,48 @@ class TicketService:
         stmt = select(TicketTagAssociation.tag_id).where(
             TicketTagAssociation.ticket_id == ticket.id
         )
-        result: Result = await session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         current_tags_ids = set(result.scalars().all())
 
         if ticket_in.tags_id:
             await validate_tags_in_base(
                 tags=ticket_in.tags_id,
-                session=session,
+                session=self.session,
             )
             new_tags_ids = set(ticket_in.tags_id) - current_tags_ids
             new_tags = [
-                TicketTagAssociation(ticket_id=ticket.id, tag_id=tag)
+                TicketTagAssociation(
+                    ticket_id=ticket.id,
+                    tag_id=tag,
+                )
                 for tag in new_tags_ids
             ]
-            session.add_all(new_tags)
+            self.session.add_all(new_tags)
 
-        await session.commit()
-        await session.refresh(ticket)
+        await self.session.commit()
+        await self.session.refresh(ticket)
         return ticket
 
     async def delete_ticket(
         self,
         ticket_id: int,
-        user: UserWithId,
-        session: AsyncSession,
     ) -> None:
         ticket: TicketAlchemyModel = validate_ticket(
-            ticket_id=ticket_id, user=user, session=session
+            ticket_id=ticket_id,
+            user=self.user,
+            session=self.session,
         )
-        await session.delete(ticket)
-        await session.commit()
+        await self.session.delete(ticket)
+        await self.session.commit()
 
     async def get_ticket(
         self,
         ticket_id: int,
-        user: UserWithId,
-        session: AsyncSession,
     ) -> TicketAlchemyModel:
         ticket: TicketAlchemyModel = validate_ticket(
-            ticket_id=ticket_id, user=user, session=session
+            ticket_id=ticket_id,
+            user=self.user,
+            session=self.session,
         )
         return ticket
 
