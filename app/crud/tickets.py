@@ -8,6 +8,7 @@ from app.core.schemas.user import UserWithId
 from app.core.models.tag import TicketTagAssociation
 from app.core.schemas.ticket import CreateTicket, UpdateTicket
 from app.core.models.ticket import TicketAlchemyModel
+from app.crud.messages import MessageService
 from app.validators.tag import validate_tags_in_base
 from app.validators.ticket import validate_ticket
 
@@ -17,9 +18,11 @@ class TicketService:
         self,
         session: AsyncSession,
         user: UserWithId,
+        message_service: MessageService,
     ):
         self.session = session
         self.user = user
+        self.message_service = message_service
 
     async def get_my_tasks(self) -> List[TicketAlchemyModel]:
         stmt = select(TicketAlchemyModel).where(
@@ -72,7 +75,7 @@ class TicketService:
         self.session.add(ticket)
         await self.session.flush()
 
-        await add_message(
+        await self.message_service.add_message(
             message=ticket_in.message,
             user=self.user,
             ticket_id=ticket.id,
@@ -135,7 +138,7 @@ class TicketService:
         ticket_in: CreateTicket,
     ) -> TicketAlchemyModel:
 
-        add_message(
+        self.message_service.add_message(
             message=ticket_in.message,
             ticket_id=ticket.id,
         )

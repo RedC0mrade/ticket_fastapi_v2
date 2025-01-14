@@ -31,10 +31,7 @@ async def get_user(
     user_id: int,
     user_service: UserService = Depends(get_user_service),
 ):
-    user = await user_service.get_user(user_id)
-    if user is None:
-        return Response(status_code=404, content="User not found")
-    return user
+    return await user_service.get_user(user_id)
 
 
 @router.post("/", response_model=UserWithId, status_code=201)
