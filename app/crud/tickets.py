@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 
 from app.core.schemas.user import UserWithId
 from app.core.models.tag import TicketTagAssociation
-from app.core.schemas.ticket import CreateTicket, UpdateTicket
+from app.core.schemas.ticket import CreateTicket
 from app.core.models.ticket import TicketAlchemyModel
 from app.crud.messages import MessageService
 from app.validators.tag import validate_tags_in_base
@@ -199,10 +199,12 @@ class TicketService:
 #                         executor: UserWithId,
 #                         session: AsyncSession) -> TicketAlchemyModel:
 
-#     ticket: TicketAlchemyModel = await validate_ticket(ticket_id=ticket_id, user=executor, session=session)
+#     ticket: TicketAlchemyModel = await validate_ticket(ticket_id=ticket_id,
+# user=executor, session=session)
 
 #     if ticket_in.message:
-#         await delete_all_messages(ticket_id=ticket_id, user=executor, session=session)
+#         await delete_all_messages(ticket_id=ticket_id, user=executor,
+# session=session)
 
 #         await add_message(ticket_id=ticket_id,
 #                           message=ticket_in.message,

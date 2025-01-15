@@ -1,4 +1,3 @@
-from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 
@@ -12,11 +11,12 @@ from app.crud.messages import MessageService
 
 router = APIRouter(tags=["Messages"])
 
-def get_messages_service(
-        session: AsyncSession = Depends(db_helper.session_getter),
-        user: User = Depends(current_auth_user),) -> MessageService:
-    return MessageService(session=session, user=user)
 
+def get_messages_service(
+    session: AsyncSession = Depends(db_helper.session_getter),
+    user: User = Depends(current_auth_user),
+) -> MessageService:
+    return MessageService(session=session, user=user)
 
 
 @router.get("/{ticket_id}", response_model=list[Message])

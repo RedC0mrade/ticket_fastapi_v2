@@ -15,10 +15,10 @@ from app.authentication.token_utils import decoded_token
 from app.authentication.actions import oauth2_scheme
 from app.core.models.user import UserAlchemyModel
 
-auth_router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(tags=["auth"])
 
 
-@auth_router.post("/login", response_model=Token)
+@router.post("/login", response_model=Token)
 def user_login(user: User = Depends(user_validate)) -> Token:
 
     create = create_acces_token(user)
@@ -83,7 +83,7 @@ class UserGetterFromToken:
 get_current_user_for_refresh = UserGetterFromToken(REFRESH_TOKEN_TYPE)
 
 
-@auth_router.post(
+@router.post(
     "/refresh", response_model=Token, response_model_exclude_none=True
 )
 def user_refresh(
