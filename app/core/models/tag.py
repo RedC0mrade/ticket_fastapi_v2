@@ -1,7 +1,7 @@
 import re
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base_model import Base
 from app.constant import HEX_COLOR_REGEX
@@ -29,22 +29,3 @@ class TagAlchemyModel(Base):
 
     def __repr__(self) -> str:
         return f"Tag(id={self.id}, tag_name={self.tag_name})"
-
-
-class TicketTagAssociation(Base):
-    __tablename__ = "ticket_tag"
-    __table_args__ = (
-        UniqueConstraint("ticket_id", "tag_id", name="unique_tag_ticket"),
-    )
-
-    ticket_id: Mapped[int] = mapped_column(ForeignKey("tickets.id"))
-    tag_id: Mapped[int] = mapped_column(ForeignKey("tags.id"))
-
-    def __repr__(self) -> str:
-        return (
-            f"Association("
-            f"id={self.id}, "
-            f"Association_id={self.ticket_id}, "
-            f"Association_id={self.tag_id}"
-            f")"
-        )

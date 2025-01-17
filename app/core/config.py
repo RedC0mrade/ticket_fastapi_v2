@@ -17,6 +17,8 @@ class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     users: str = "/users"
     tickets: str = "/tickets"
+    tags: str = "/tags"
+    ticket_tag_associations: str = "/ticket_tag_associations"
     messages: str = "/messages"
     auth: str = "/auth"
 

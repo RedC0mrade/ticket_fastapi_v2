@@ -3,21 +3,21 @@ __all__ = (
     "Base",
     "UserAlchemyModel",
     "TagAlchemyModel",
-    "TicketTagAssociation",
+    "TicketTagAssociationAlchemyModel",
     "MessageAlchemyModel",
     "ProfileAlchemyModel",
     "TicketAlchemyModel",
     "FollowerAlchemyModel",
-    "FriendAlchemyModel"
+    "FriendAlchemyModel",
 )
 
 from .engine import db_helper
 from .base_model import Base
 from .user import UserAlchemyModel
 from .ticket import TicketAlchemyModel
-from .tag import TagAlchemyModel, TicketTagAssociation
+from .tag import TagAlchemyModel
 from .message import MessageAlchemyModel
 from .profile import ProfileAlchemyModel
 from .follower import FollowerAlchemyModel
 from .friend import FriendAlchemyModel
-
+from .ticket_tag_association import TicketTagAssociationAlchemyModel
