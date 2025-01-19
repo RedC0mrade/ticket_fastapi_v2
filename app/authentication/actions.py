@@ -14,7 +14,7 @@ from app.constant import TOKEN_TYPE, ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE
 from app.core.config import settings
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/api/v1/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/ticket/v1/auth/login")
 
 
 async def user_validate(

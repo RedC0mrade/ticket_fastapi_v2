@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.models.tag import TicketTagAssociation, TagAlchemyModel
+from app.core.models.tag import TagAlchemyModel
 
 
 async def validate_tags_in_base(
@@ -19,24 +19,6 @@ async def validate_tags_in_base(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Wrong tag id: {", ".join(map(str, mising_tags))}",
         )
-
-
-async def validate_assosiation(
-    assosiation_id: int,
-    session: AsyncSession,
-) -> TicketTagAssociation:
-    assosiation = await session.get(
-        TicketTagAssociation,
-        assosiation_id,
-    )
-
-    if not assosiation:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Association {assosiation_id} not found",
-        )
-    return assosiation
-
 
 async def validate_tag(
     tag_id: int,

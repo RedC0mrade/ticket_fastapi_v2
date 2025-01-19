@@ -25,6 +25,7 @@ class ApiV1Prefix(BaseModel):
 
 class ApiPrefix(BaseModel):
     prefix: str = "/api"
+    ticket_prefix: str = "/ticket" 
     v1: ApiV1Prefix = ApiV1Prefix()
 
 

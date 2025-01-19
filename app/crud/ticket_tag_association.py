@@ -8,29 +8,28 @@ from app.core.models.ticket_tag_association import (
     )
 from app.core.models.ticket import TicketAlchemyModel
 from app.core.schemas.user import UserWithId
-from app.validators.tag import (
-    validate_assosiation,
-    validate_tags_in_base,
-)
+from app.validators.tag import validate_tags_in_base
+from app.validators.ticket_tag_association import validate_assosiation
 from app.validators.ticket import validate_ticket
 
 class TicketTagAssociationService:
     def __init__(
         self,
         session: AsyncSession,
+        user: UserWithId,
     ):
         self.session = session
+        self.user = user
 
     async def create_associations(
         self,
         tags_ids: List[int],
-        user: UserWithId,
         ticket_id: int,
     ) -> List[TicketTagAssociationAlchemyModel]:
 
         ticket: TicketAlchemyModel = await validate_ticket(
             ticket_id=ticket_id,
-            user=user,
+            user=self.user,
             session=self.session,
         )
         await validate_tags_in_base(

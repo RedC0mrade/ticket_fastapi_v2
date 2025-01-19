@@ -15,7 +15,6 @@ router = APIRouter(tags=["ticket"])
 
 
 def get_ticket_service(
-    self,
     session: AsyncSession = Depends(db_helper.session_getter),
     user: UserWithId = Depends(current_auth_user),
     message_service: MessageService = Depends(get_messages_service),

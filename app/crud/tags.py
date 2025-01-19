@@ -11,7 +11,6 @@ from app.core.models.ticket_tag_association import (
 from app.core.models.ticket import TicketAlchemyModel
 from app.core.schemas.user import UserWithId
 from app.validators.tag import (
-    validate_assosiation,
     validate_tag,
     validate_tags_in_base,
 )

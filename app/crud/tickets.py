@@ -5,7 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
 from app.core.schemas.user import UserWithId
-from app.core.models.tag import TicketTagAssociation
+from app.core.models.ticket_tag_association import (
+    TicketTagAssociationAlchemyModel,
+)
 from app.core.schemas.ticket import CreateTicket
 from app.core.models.ticket import TicketAlchemyModel
 from app.crud.messages import MessageService
@@ -145,8 +147,8 @@ class TicketService:
 
         ticket.amount += ticket_in.amount
 
-        stmt = select(TicketTagAssociation.tag_id).where(
-            TicketTagAssociation.ticket_id == ticket.id
+        stmt = select(TicketTagAssociationAlchemyModel.tag_id).where(
+            TicketTagAssociationAlchemyModel.ticket_id == ticket.id
         )
         result: Result = await self.session.execute(stmt)
         current_tags_ids = set(result.scalars().all())
@@ -158,7 +160,7 @@ class TicketService:
             )
             new_tags_ids = set(ticket_in.tags_id) - current_tags_ids
             new_tags = [
-                TicketTagAssociation(
+                TicketTagAssociationAlchemyModel(
                     ticket_id=ticket.id,
                     tag_id=tag,
                 )
