@@ -56,13 +56,15 @@ async def current_auth_user(
         payload: dict = decoded_token(token=token)
     except InvalidTokenError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Token",
         )
     username: str | None = payload.get("username")
 
     if not username:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="user not found"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="user not found",
         )
 
     stmt = select(UserAlchemyModel).where(
