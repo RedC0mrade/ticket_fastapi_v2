@@ -5,6 +5,7 @@ from .users import router as user_router
 from .messages import router as messages_router
 from .tickets import router as tickets_router
 from .tags import router as tag_router
+from .followers import router as follower_router
 from .ticket_tag_association import router as association_router
 from app.authentication.views import router as auth_router
 
@@ -29,6 +30,10 @@ router.include_router(
 router.include_router(
     association_router,
     prefix=settings.api.v1.ticket_tag_associations,
+)
+router.include_router(
+    follower_router,
+    prefix=settings.api.v1.followers,
 )
 router.include_router(
     auth_router,

@@ -19,6 +19,8 @@ class ApiV1Prefix(BaseModel):
     tickets: str = "/tickets"
     tags: str = "/tags"
     ticket_tag_associations: str = "/ticket_tag_associations"
+    followers: str = "/followers"
+    friends: str = "/friends"
     messages: str = "/messages"
     auth: str = "/auth"
 

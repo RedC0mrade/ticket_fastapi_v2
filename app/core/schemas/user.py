@@ -19,3 +19,8 @@ class UserWithId(User):
     password: bytes
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserFolloers(BaseModel):
+    id: int
+    followers: list[UserWithId]

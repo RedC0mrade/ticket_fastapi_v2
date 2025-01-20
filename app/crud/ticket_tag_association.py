@@ -5,12 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.ticket_tag_association import (
     TicketTagAssociationAlchemyModel,
-    )
+)
 from app.core.models.ticket import TicketAlchemyModel
 from app.core.schemas.user import UserWithId
 from app.validators.tag import validate_tags_in_base
 from app.validators.ticket_tag_association import validate_assosiation
 from app.validators.ticket import validate_ticket
+
 
 class TicketTagAssociationService:
     def __init__(
@@ -53,9 +54,11 @@ class TicketTagAssociationService:
         self,
         association_id: int,
     ) -> None:
-        association: TicketTagAssociationAlchemyModel = await validate_assosiation(
-            assosiation_id=association_id,
-            session=self.session,
+        association: TicketTagAssociationAlchemyModel = (
+            await validate_assosiation(
+                assosiation_id=association_id,
+                session=self.session,
+            )
         )
         await self.session.delete(association)
         await self.session.commit()

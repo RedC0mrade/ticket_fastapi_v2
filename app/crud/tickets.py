@@ -90,7 +90,7 @@ class TicketService:
                 session=self.session,
             )
             associations = [
-                TicketTagAssociation(
+                TicketTagAssociationAlchemyModel(
                     ticket_id=ticket.id,
                     tag_id=tag,
                 )

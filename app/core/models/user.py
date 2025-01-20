@@ -22,12 +22,12 @@ class UserAlchemyModel(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
-    friends: Mapped["FriendAlchemyModel"] = relationship(
+    friends: Mapped[list["FriendAlchemyModel"]] = relationship(
         back_populates="friend",
         foreign_keys="[FriendAlchemyModel.friend_id]",
         cascade="all, delete-orphan",
     )
-    followers: Mapped["FollowerAlchemyModel"] = relationship(
+    followers: Mapped[list["FollowerAlchemyModel"]] = relationship(
         back_populates="follower",
         foreign_keys="[FollowerAlchemyModel.follower_id]",
         cascade="all, delete-orphan",
