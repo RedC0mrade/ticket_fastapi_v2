@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import HTTPException, status
+from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
@@ -16,6 +17,14 @@ class FollowerService:
     ):
         self.session = session
         self.user = user
+
+    async def get_all_folowers(self) -> List[FollowerAlchemyModel]:
+        stmt = select(FollowerAlchemyModel).where(
+            FollowerAlchemyModel.user_id == self.user.id
+        )
+        result: Result = await self.session.execute(stmt)
+        followers = result.scalars().all()
+        return followers
 
     async def create_follow(
         self,

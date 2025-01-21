@@ -18,6 +18,12 @@ class FollowerAlchemyModel(Base):
         lazy="selectin",
         foreign_keys=[follower_id],
     )
+    fan: Mapped["UserAlchemyModel"] = relationship(
+        "UserAlchemyModel",
+        back_populates="fans",
+        lazy="selectin",
+        foreign_keys=[user_id],
+    )
 
     def __repr__(self) -> str:
         return (

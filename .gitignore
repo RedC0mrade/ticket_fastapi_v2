@@ -171,3 +171,4 @@ cython_debug/
 .pypirc
 
 certs/
+my_delete.py

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.authentication.actions import current_auth_user
 from app.core.models.engine import db_helper
-from app.core.schemas.follower import Follower
+from app.core.schemas.follower import FollowerModelSchema, GetFollower
 from app.core.schemas.user import UserWithId
 from app.crud.followers import FollowerService
 
@@ -22,12 +22,20 @@ def get_follow_service(
     )
 
 
-@router.post("/following/{follower_id}", response_model = Follower)
+@router.get("/get_all_followers", response_model=list[GetFollower])
+async def get_all_folowers(
+    follow_service: FollowerService = Depends(get_follow_service),
+):
+    return await follow_service.get_all_folowers()
+
+
+@router.post("/following/{follower_id}", response_model=FollowerModelSchema)
 async def create_follow(
     follower_id: int,
     follow_service: FollowerService = Depends(get_follow_service),
 ):
     return await follow_service.create_follow(follower_id)
+
 
 @router.delete("/delete/{follower_id}", status_code=204)
 async def delete_follow(

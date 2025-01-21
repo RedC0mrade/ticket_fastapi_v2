@@ -21,6 +21,10 @@ class UserWithId(User):
     model_config = ConfigDict(from_attributes=True)
 
 
-class UserFolloers(BaseModel):
+class UserFollow(BaseModel):
     id: int
-    followers: list[UserWithId]
+    username: str
+    email: EmailStr
+
+    model_config = ConfigDict(from_attributes=True)
+
