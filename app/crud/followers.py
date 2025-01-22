@@ -1,11 +1,10 @@
 from typing import List
-from fastapi import HTTPException, status
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
-from app.core.models.user import UserAlchemyModel
 from app.core.schemas.user import UserWithId
+from app.crud.friends import FriendService
 from app.validators.follow import validate_follow
 
 
@@ -14,9 +13,11 @@ class FollowerService:
         self,
         session: AsyncSession,
         user: UserWithId,
+        friend_service: FriendService
     ):
         self.session = session
         self.user = user
+        self.friend_service = friend_service
 
     async def get_all_folowers(self) -> List[FollowerAlchemyModel]:
         stmt = select(FollowerAlchemyModel).where(
@@ -26,10 +27,19 @@ class FollowerService:
         followers = result.scalars().all()
         return followers
 
+    async def get_all_fans(self) -> List[FollowerAlchemyModel]:
+        stmt = select(FollowerAlchemyModel).where(
+            FollowerAlchemyModel.follower_id == self.user.id
+        )
+        result: Result = await self.session.execute(stmt)
+        fans = result.scalars().all()
+        return fans
+
     async def create_follow(
         self,
         folower_id: int,
     ) -> FollowerAlchemyModel:
+        
         follow = FollowerAlchemyModel(
             user_id=self.user.id,
             follower_id=folower_id,
@@ -44,8 +54,20 @@ class FollowerService:
     ):
         follow = await validate_follow(
             follower_id=follower_id,
-            user=self.user,
+            user_id=self.user.id,
             session=self.session,
         )
         await self.session.delete(follow)
+        await self.session.commit()
+
+    async def delete_fan(
+        self,
+        fan_id: int,
+    ):
+        fan = await validate_follow(
+            follower_id=self.user.id,
+            user_id=fan_id,
+            session=self.session,
+        )
+        await self.session.delete(fan)
         await self.session.commit()
