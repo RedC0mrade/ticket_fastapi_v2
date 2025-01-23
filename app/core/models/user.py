@@ -37,6 +37,11 @@ class UserAlchemyModel(Base):
         foreign_keys="[FollowerAlchemyModel.user_id]",
         cascade="all, delete-orphan",
     )
+    blacks: Mapped[list["FollowerAlchemyModel"]] = relationship(
+        back_populates="black_user",
+        foreign_keys="[BlackListAlchemyModel.black_id]",
+        cascade="all, delete-orphan",
+    )
     to_do_tickets: Mapped[list["TicketAlchemyModel"]] = relationship(
         "TicketAlchemyModel",
         foreign_keys="[TicketAlchemyModel.executor_id]",

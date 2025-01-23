@@ -1,11 +1,10 @@
 from typing import List
-from sqlalchemy import Result, select
+from sqlalchemy import Result, delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
 from app.core.schemas.user import UserWithId
-from app.validators.follow import validate_follow
-from app.validators.friends import validate_friend, validate_friendshipe
 
 
 class FriendService:
@@ -19,7 +18,7 @@ class FriendService:
 
     async def get_all_friends(self) -> List[FriendAlchemyModel]:
         stmt = select(FriendAlchemyModel).where(
-            FriendAlchemyModel.user_id == self.user.id
+            FriendAlchemyModel.user_id == self.user.id,
         )
         result: Result = await self.session.execute(stmt)
         friends = result.scalars().all()
@@ -29,13 +28,34 @@ class FriendService:
         self,
         friend_id: int,
     ) -> FriendAlchemyModel:
-        validate_follow(
-            follower_id=self.user.id,
-            user_id=friend_id,
-        )
-        validate_friendshipe(
+
+        friendship = FriendAlchemyModel(
             user_id=self.user.id,
             friend_id=friend_id,
         )
-        stmt = FriendAlchemyModel()
-        return friend
+        friendship_follower = FriendAlchemyModel(
+            friend_id=self.user.id,
+            user_id=friend_id,
+        )
+        self.session.add_all([friendship, friendship_follower])
+        await self.session.commit()
+        return friendship
+
+    async def delete_friendship(
+        self,
+        friend_id,
+    ) -> None:
+
+        stmt = delete(FriendAlchemyModel).where(
+            or_(
+                FriendAlchemyModel.user_id == self.user.id,
+                FriendAlchemyModel.user_id == friend_id,
+            )
+        )
+        await self.session.execute(stmt)
+        follow = FollowerAlchemyModel(
+            user_id=friend_id,
+            follower_id=self.user.id,
+        )
+        self.session.add(follow)
+        await self.session.commit()

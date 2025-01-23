@@ -3,9 +3,13 @@ from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
+from app.core.models.friend import FriendAlchemyModel
 from app.core.schemas.user import UserWithId
 from app.crud.friends import FriendService
-from app.validators.follow import validate_follow
+from app.validators.follow import (
+    validate_follow,
+    validate_follower_relationship,
+)
 
 
 class FollowerService:
@@ -13,7 +17,7 @@ class FollowerService:
         self,
         session: AsyncSession,
         user: UserWithId,
-        friend_service: FriendService
+        friend_service: FriendService,
     ):
         self.session = session
         self.user = user
@@ -35,24 +39,11 @@ class FollowerService:
         fans = result.scalars().all()
         return fans
 
-    async def create_follow(
-        self,
-        folower_id: int,
-    ) -> FollowerAlchemyModel:
-        
-        follow = FollowerAlchemyModel(
-            user_id=self.user.id,
-            follower_id=folower_id,
-        )
-        self.session.add(follow)
-        await self.session.commit()
-        return follow
-
     async def delete_follow(
         self,
         follower_id: int,
     ):
-        follow = await validate_follow(
+        follow = await validate_follower_relationship(
             follower_id=follower_id,
             user_id=self.user.id,
             session=self.session,
@@ -64,10 +55,38 @@ class FollowerService:
         self,
         fan_id: int,
     ):
-        fan = await validate_follow(
+        fan = await validate_follower_relationship(
             follower_id=self.user.id,
             user_id=fan_id,
             session=self.session,
         )
         await self.session.delete(fan)
         await self.session.commit()
+
+    async def create_follow_friendship(
+        self,
+        follower_id: int,
+    ) -> FollowerAlchemyModel | FriendAlchemyModel:
+
+        fan = await validate_follow(
+            follower_id=follower_id,
+            user_id=self.user.id,
+            session=self.session,
+        )
+
+        if fan:
+            friendship = await self.friend_service.create_friend_relationship(
+                friend_id=follower_id,
+            )
+            self.session.delete(fan)
+            self.session.commit()
+            return friendship
+
+        follow = FollowerAlchemyModel(
+            follower_id=follower_id,
+            user_id=self.user.id,
+        )
+
+        self.session.add(follow)
+        await self.session.commit()
+        return follow

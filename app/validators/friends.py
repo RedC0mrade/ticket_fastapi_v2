@@ -2,7 +2,6 @@ from fastapi import HTTPException, status
 from sqlalchemy import Result, and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
 
 
@@ -31,7 +30,7 @@ async def validate_friend(
     return friend
 
 
-async def validate_friendshipe(
+async def validate_friendship(
     friend_id: int,
     user_id: int,
     session: AsyncSession,
@@ -59,4 +58,3 @@ async def validate_friendshipe(
                 f"and {friend_id} already friends",
             ),
         )
-    return friend

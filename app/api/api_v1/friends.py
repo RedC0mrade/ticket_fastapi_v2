@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.authentication.actions import current_auth_user
 from app.core.models.engine import db_helper
-from app.core.schemas.friend import Friend, GetFriend
+from app.core.schemas.friend import GetFriend
 from app.core.schemas.user import UserWithId
 from app.crud.friends import FriendService
 
@@ -28,9 +28,9 @@ async def get_all_friends(
     return await friend_service.get_all_friends()
 
 
-@router.post("/get_friendship/{friend_id}", response_model=Friend)
-async def friend_relationship(
+@router.delete("/delete_friendship/{friendship_id}", status_code=204)
+async def delete_friendship(
     friend_id: int,
     friend_service: FriendService = Depends(get_friend_service),
 ):
-    return await friend_service.create_friend_relationship(friend_id=friend_id)
+    return await friend_service.delete_friendship(friend_id=friend_id)
