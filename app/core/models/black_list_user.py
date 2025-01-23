@@ -7,7 +7,9 @@ from .base_model import Base
 
 class BlackListAlchemyModel(Base):
     __tablename__ = "black"
-    __table_args__ = UniqueConstraint("user_id", "black_id", name="black_list")
+    __table_args__ = (
+        UniqueConstraint("user_id", "black_id", name="black_list"),
+    )
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     black_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     black_user: Mapped["UserAlchemyModel"] = relationship(

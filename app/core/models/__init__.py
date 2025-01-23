@@ -1,6 +1,7 @@
 __all__ = (
     "db_helper",
     "Base",
+    "BlackListAlchemyModel",
     "UserAlchemyModel",
     "TagAlchemyModel",
     "TicketTagAssociationAlchemyModel",
@@ -21,3 +22,4 @@ from .profile import ProfileAlchemyModel
 from .follower import FollowerAlchemyModel
 from .friend import FriendAlchemyModel
 from .ticket_tag_association import TicketTagAssociationAlchemyModel
+from .black_list_user import BlackListAlchemyModel
