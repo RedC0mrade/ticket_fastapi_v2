@@ -22,6 +22,7 @@ class ApiV1Prefix(BaseModel):
     followers: str = "/followers"
     friends: str = "/friends"
     messages: str = "/messages"
+    blacklist: str = "/blacklist"
     auth: str = "/auth"
 
 

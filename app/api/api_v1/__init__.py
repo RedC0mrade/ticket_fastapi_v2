@@ -7,6 +7,7 @@ from .tickets import router as tickets_router
 from .tags import router as tag_router
 from .followers import router as follower_router
 from .friends import router as friend_router
+from .blacklist import router as blacklist_router
 from .ticket_tag_association import router as association_router
 from app.authentication.views import router as auth_router
 
@@ -15,6 +16,10 @@ router = APIRouter(prefix=settings.api.v1.prefix)
 router.include_router(
     user_router,
     prefix=settings.api.v1.users,
+)
+router.include_router(
+    blacklist_router,
+    prefix=settings.api.v1.blacklist,
 )
 router.include_router(
     messages_router,
