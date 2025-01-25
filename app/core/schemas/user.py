@@ -21,7 +21,7 @@ class UserWithId(User):
     model_config = ConfigDict(from_attributes=True)
 
 
-class UserFollowFriend(BaseModel):
+class UserBlackFollowFriend(BaseModel):
     id: int
     username: str
     email: EmailStr

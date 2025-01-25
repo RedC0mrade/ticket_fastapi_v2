@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.core.schemas.user import UserFollowFriend
+from app.core.schemas.user import UserBlackFollowFriend
 
 
 class Friend(BaseModel):
@@ -10,4 +10,4 @@ class Friend(BaseModel):
 
 class GetFriend(BaseModel):
     id: int
-    friend: UserFollowFriend
+    friend: UserBlackFollowFriend
