@@ -31,7 +31,7 @@ class BlacklistServices:
         black_id: int,
     ):
         await validate_user_in_blacklist(
-            user=self.user,
+            user_id=self.user.id,
             black_id=black_id,
             session=self.session,
         )

@@ -42,6 +42,7 @@ async def get_all_fans(
 @router.post(
     "/following/{follower_id}",
     response_model=Union[FollowerModelSchema, Friend],
+    status_code=201,
 )
 async def create_follow(
     follower_id: int,

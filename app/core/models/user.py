@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from app.core.models.ticket import TicketAlchemyModel
     from app.core.models.friend import FriendAlchemyModel
     from app.core.models.follower import FollowerAlchemyModel
+    from app.core.models.black_list_user import BlackListAlchemyModel
 
 
 class UserAlchemyModel(Base):
@@ -37,7 +38,7 @@ class UserAlchemyModel(Base):
         foreign_keys="[FollowerAlchemyModel.user_id]",
         cascade="all, delete-orphan",
     )
-    blacks: Mapped[list["FollowerAlchemyModel"]] = relationship(
+    blacks: Mapped[list["BlackListAlchemyModel"]] = relationship(
         back_populates="black_user",
         foreign_keys="[BlackListAlchemyModel.black_id]",
         cascade="all, delete-orphan",

@@ -3,6 +3,7 @@ from sqlalchemy import Result, and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
+from app.validators.black_list import validate_user_in_blacklist
 from .friends import validate_friendship
 
 
@@ -27,7 +28,10 @@ async def validate_follow(
         follower_id=follower_id,
         user_id=user_id,
     )
-
+    await validate_user_in_blacklist(
+        black_id=user_id,
+        user_id=follower_id,
+    )
     await validate_friendship(
         friend_id=follower_id,
         user_id=user_id,

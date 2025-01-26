@@ -12,4 +12,3 @@ class Tag(BaseModel):
 class CreateTag(BaseModel):
     tag_name: str
     tag_color: str
-

@@ -9,5 +9,4 @@ class Friend(BaseModel):
 
 
 class GetFriend(BaseModel):
-    id: int
     friend: UserBlackFollowFriend
