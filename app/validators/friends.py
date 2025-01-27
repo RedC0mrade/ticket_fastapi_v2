@@ -48,8 +48,7 @@ async def validate_friendship(
         )
     )
     result: Result = await session.execute(stmt)
-    friend: FriendAlchemyModel = result.scalar_one_or_none()
-
+    friend = result.scalars().all()
     if friend:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

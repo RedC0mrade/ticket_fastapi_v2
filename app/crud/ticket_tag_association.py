@@ -7,7 +7,7 @@ from app.core.models.ticket_tag_association import (
     TicketTagAssociationAlchemyModel,
 )
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.validators.tag import validate_tags_in_base
 from app.validators.ticket_tag_association import validate_assosiation
 from app.validators.ticket import validate_ticket
@@ -17,7 +17,7 @@ class TicketTagAssociationService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserWithId,
+        user: UserBase,
     ):
         self.session = session
         self.user = user

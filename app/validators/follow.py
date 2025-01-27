@@ -31,6 +31,7 @@ async def validate_follow(
     await validate_user_in_blacklist(
         black_id=user_id,
         user_id=follower_id,
+        session=session,
     )
     await validate_friendship(
         friend_id=follower_id,
@@ -69,8 +70,10 @@ async def validate_follow(
 
 
 async def validate_follower_relationship(
-    follower_id: int, user_id: int, session: AsyncSession
-):
+    follower_id: int,
+    user_id: int,
+    session: AsyncSession,
+) -> FollowerAlchemyModel:
     validate_follow_yourself(
         follower_id=follower_id,
         user_id=user_id,
@@ -87,7 +90,7 @@ async def validate_follower_relationship(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
                 f"User with id = {user_id} don't have ",
-                f"foloower with id = {follower_id}",
+                f"follower with id = {follower_id}",
             ),
         )
     return follow

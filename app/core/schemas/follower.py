@@ -1,18 +1,18 @@
 from pydantic import BaseModel, ConfigDict
 
-from app.core.schemas.user import UserBlackFollowFriend
+from app.core.schemas.user import UserBase
 
 
-class FollowerModelSchema(BaseModel):
+class FollowerSchema(BaseModel):
     user_id: int
     follower_id: int
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class GetFollower(BaseModel):
-    follower: UserBlackFollowFriend
+class GetFollower(FollowerSchema):
+    follower: UserBase
 
 
-class GetFan(BaseModel):
-    fan: UserBlackFollowFriend
+class GetFan(FollowerSchema):
+    fan: UserBase

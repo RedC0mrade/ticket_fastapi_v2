@@ -2,7 +2,7 @@ from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.black_list_user import BlackListAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.validators.black_list import (
     validate_user_in_blacklist,
     validate_user_not_in_blacklist,
@@ -12,7 +12,7 @@ from app.validators.black_list import (
 class BlacklistServices:
     def __init__(
         self,
-        user: UserWithId,
+        user: UserBase,
         session: AsyncSession,
     ):
         self.user = user
@@ -45,7 +45,7 @@ class BlacklistServices:
 
     async def remove_from_blacklist(
         self,
-        black_id,
+        black_id: int,
     ) -> None:
         blaclist_user = await validate_user_not_in_blacklist(
             user_id=self.user.id,

@@ -7,9 +7,9 @@ from app.core.schemas.tag import CreateTag
 from app.core.models.tag import TagAlchemyModel
 from app.core.models.ticket_tag_association import (
     TicketTagAssociationAlchemyModel,
-    )
+)
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.validators.tag import (
     validate_tag,
     validate_tags_in_base,
@@ -49,4 +49,3 @@ class TagService:
         )
         await self.session.delete(tag)
         await self.session.commit()
-

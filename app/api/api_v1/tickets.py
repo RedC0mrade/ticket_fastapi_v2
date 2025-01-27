@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.api_v1.messages import get_messages_service
 from app.core.schemas.ticket import Ticket, CreateTicket
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.authentication.actions import current_auth_user
 from app.core.models.engine import db_helper
 from app.crud.messages import MessageService
@@ -16,7 +16,7 @@ router = APIRouter(tags=["ticket"])
 
 def get_ticket_service(
     session: AsyncSession = Depends(db_helper.session_getter),
-    user: UserWithId = Depends(current_auth_user),
+    user: UserBase = Depends(current_auth_user),
     message_service: MessageService = Depends(get_messages_service),
 ):
     return TicketService(

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.crud.friends import FriendService
 from app.validators.follow import (
     validate_follow,
@@ -16,7 +16,7 @@ class FollowerService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserWithId,
+        user: UserBase,
         friend_service: FriendService,
     ):
         self.session = session
@@ -68,7 +68,7 @@ class FollowerService:
         follower_id: int,
     ) -> FollowerAlchemyModel | FriendAlchemyModel:
 
-        fan = await validate_follow(
+        fan: FollowerAlchemyModel = await validate_follow(
             follower_id=follower_id,
             user_id=self.user.id,
             session=self.session,
@@ -78,8 +78,8 @@ class FollowerService:
             friendship = await self.friend_service.create_friend_relationship(
                 friend_id=follower_id,
             )
-            self.session.delete(fan)
-            self.session.commit()
+            await self.session.delete(fan)
+            await self.session.commit()
             return friendship
 
         follow = FollowerAlchemyModel(

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.message import MessageAlchemyModel
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.validators.message import validate_message
 from app.validators.ticket import validate_ticket
 
@@ -13,7 +13,7 @@ class MessageService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserWithId,
+        user: UserBase,
     ):
         self.session = session
         self.user = user

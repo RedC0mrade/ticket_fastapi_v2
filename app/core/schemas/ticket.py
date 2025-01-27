@@ -2,7 +2,7 @@ from typing import Annotated, List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.core.schemas.tag import Tag
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.core.schemas.message import Message
 
 
@@ -15,9 +15,9 @@ class Ticket(BaseModel):
     messages: Optional[List[Message]] = None
     tags: List[Tag]
     amount: int
-    acceptor: UserWithId
+    acceptor: UserBase
     acceptor_id: int
-    executor: UserWithId
+    executor: UserBase
     executor_id: int
 
     model_config = ConfigDict(from_attributes=True)

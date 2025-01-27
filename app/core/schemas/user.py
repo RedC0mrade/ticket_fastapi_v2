@@ -14,14 +14,7 @@ class UserPatch(BaseModel):
     email: Optional["EmailStr"] = None
 
 
-class UserWithId(User):
-    id: int
-    password: bytes
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class UserBlackFollowFriend(BaseModel):
+class UserBase(BaseModel):
     id: int
     username: str
     email: EmailStr

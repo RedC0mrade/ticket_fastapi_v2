@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.authentication.actions import current_auth_user
 from app.core.models.engine import db_helper
 from app.core.schemas.friend import GetFriend
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.crud.friends import FriendService
 
 
@@ -12,7 +12,7 @@ router = APIRouter(tags=["friends"])
 
 
 def get_friend_service(
-    user: UserWithId = Depends(current_auth_user),
+    user: UserBase = Depends(current_auth_user),
     session: AsyncSession = Depends(db_helper.session_getter),
 ):
     return FriendService(

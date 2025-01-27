@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.users import UserService
-from app.core.schemas.user import User, UserWithId, UserPatch
+from app.core.schemas.user import User, UserBase, UserPatch
 from app.core.models.engine import db_helper
 from app.authentication.actions import current_auth_user
 
@@ -16,17 +16,17 @@ def get_user_service(
     return UserService(session=session)
 
 
-@router.get("/", response_model=list[UserWithId])
+@router.get("/", response_model=list[UserBase])
 async def get_users(user_service: UserService = Depends(get_user_service)):
     return await user_service.get_users()
 
 
-@router.get("/me", response_model=UserWithId)
+@router.get("/me", response_model=UserBase)
 def get_me(user: User = Depends(current_auth_user)):
     return user
 
 
-@router.get("/{user_id}", response_model=UserWithId)
+@router.get("/{user_id}", response_model=UserBase)
 async def get_user(
     user_id: int,
     user_service: UserService = Depends(get_user_service),
@@ -34,7 +34,7 @@ async def get_user(
     return await user_service.get_user(user_id)
 
 
-@router.post("/", response_model=UserWithId, status_code=201)
+@router.post("/", response_model=UserBase, status_code=201)
 async def create_user(
     user_create: User,
     user_service: UserService = Depends(get_user_service),
@@ -48,9 +48,7 @@ async def put_user(
     user_in: User,
     user_service: UserService = Depends(get_user_service),
 ):
-    result: dict = await user_service.put_user(
-        user_in=user_in, user_id=user_id
-        )
+    result: dict = await user_service.put_user(user_in=user_in, user_id=user_id)
     return Response(status_code=200, content=f"data changed {result}")
 
 

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.authentication.actions import current_auth_user
 from app.core.schemas.ticket_tag_association import TicketTagAssociation
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 from app.core.models.engine import db_helper
 from app.crud.ticket_tag_association import TicketTagAssociationService
 
@@ -14,7 +14,7 @@ router = APIRouter(tags=["ticket_tag_association"])
 
 def get_ticket_tags_association_service(
     session: AsyncSession = Depends(db_helper.session_getter),
-    user: UserWithId = Depends(current_auth_user)
+    user: UserBase = Depends(current_auth_user),
 ) -> TicketTagAssociationService:
     return TicketTagAssociationService(session=session)
 

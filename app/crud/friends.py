@@ -1,17 +1,17 @@
 from typing import List
-from sqlalchemy import Result, delete, or_, select
+from sqlalchemy import Result, and_, delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 
 
 class FriendService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserWithId,
+        user: UserBase,
     ):
         self.session = session
         self.user = user
@@ -48,8 +48,14 @@ class FriendService:
 
         stmt = delete(FriendAlchemyModel).where(
             or_(
-                FriendAlchemyModel.user_id == self.user.id,
-                FriendAlchemyModel.user_id == friend_id,
+                and_(
+                    FriendAlchemyModel.user_id == self.user.id,
+                    FriendAlchemyModel.friend_id == friend_id
+                ),
+                and_(
+                    FriendAlchemyModel.user_id == friend_id,
+                    FriendAlchemyModel.friend_id == self.user.id
+                )
             )
         )
         await self.session.execute(stmt)

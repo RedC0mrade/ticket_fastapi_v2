@@ -6,12 +6,12 @@ from sqlalchemy.orm import selectinload
 
 from app.core.models.message import MessageAlchemyModel
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 
 
 async def validate_message(
     message_id: int,
-    user: UserWithId,
+    user: UserBase,
     session: AsyncSession,
 ) -> MessageAlchemyModel:
 

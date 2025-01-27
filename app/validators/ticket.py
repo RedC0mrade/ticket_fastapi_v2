@@ -3,12 +3,12 @@ from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserWithId
+from app.core.schemas.user import UserBase
 
 
 async def validate_ticket(
     ticket_id: int,
-    user: UserWithId,
+    user: UserBase,
     session: AsyncSession,
 ) -> TicketAlchemyModel:
 

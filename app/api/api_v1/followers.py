@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.api_v1.friends import get_friend_service
 from app.authentication.actions import current_auth_user
 from app.core.models.engine import db_helper
-from app.core.schemas.follower import FollowerModelSchema, GetFan, GetFollower
-from app.core.schemas.friend import Friend
-from app.core.schemas.user import UserWithId
+from app.core.schemas.follower import FollowerSchema, GetFan, GetFollower
+from app.core.schemas.friend import FriendSchema
+from app.core.schemas.user import UserBase
 from app.crud.followers import FollowerService
 from app.crud.friends import FriendService
 
@@ -16,7 +16,7 @@ router = APIRouter(tags=["followers"])
 
 
 def get_follow_service(
-    user: UserWithId = Depends(current_auth_user),
+    user: UserBase = Depends(current_auth_user),
     session: AsyncSession = Depends(db_helper.session_getter),
     friend_service: FriendService = Depends(get_friend_service),
 ):
@@ -41,7 +41,7 @@ async def get_all_fans(
 
 @router.post(
     "/following/{follower_id}",
-    response_model=Union[FollowerModelSchema, Friend],
+    response_model=Union[FollowerSchema, FriendSchema],
     status_code=201,
 )
 async def create_follow(

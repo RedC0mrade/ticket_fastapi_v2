@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.core.schemas.user import UserBlackFollowFriend
+from app.core.schemas.user import UserBase
 
 
 class BlackUser(BaseModel):
@@ -8,5 +8,5 @@ class BlackUser(BaseModel):
     black_id: int
 
 
-class BlacklistUser(BaseModel):
-    black_user: UserBlackFollowFriend
+class BlacklistUser(BlackUser):
+    black_user: UserBase
