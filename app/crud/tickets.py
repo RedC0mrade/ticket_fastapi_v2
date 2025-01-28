@@ -79,9 +79,7 @@ class TicketService:
 
         await self.message_service.add_message(
             message=ticket_in.message,
-            user=self.user,
             ticket_id=ticket.id,
-            session=self.session,
         )
 
         if ticket_in.tags_id:
