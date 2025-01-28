@@ -195,7 +195,6 @@ class TicketService:
         )
         return ticket
 
-
 # async def update_ticket(ticket_id: int,
 #                         ticket_in: UpdateTicket,
 #                         executor: UserWithId,
