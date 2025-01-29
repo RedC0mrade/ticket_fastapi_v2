@@ -21,14 +21,20 @@ def get_blacklist_service(
     )
 
 
-@router.get("/my_blacklist", response_model=list[BlacklistUser])
+@router.get(
+    "/my_blacklist",
+    response_model=list[BlacklistUser],
+)
 async def get_all_blacklist_users(
     black_service: BlacklistServices = Depends(get_blacklist_service),
 ):
     return await black_service.get_all_blacklist_users()
 
 
-@router.delete("/remove_from_blacklist/{black_id}", status_code=204)
+@router.delete(
+    "/remove_from_blacklist/{black_id}",
+    status_code=204,
+)
 async def remove_from_blacklist(
     black_id: int,
     black_service: BlacklistServices = Depends(get_blacklist_service),
@@ -37,7 +43,9 @@ async def remove_from_blacklist(
 
 
 @router.post(
-    "/add_to_blacklist/{black_id}", response_model=BlackUser, status_code=201
+    "/add_to_blacklist/{black_id}",
+    # response_model=BlackUser,
+    # status_code=201,
 )
 async def add_to_blacklist(
     black_id: int,

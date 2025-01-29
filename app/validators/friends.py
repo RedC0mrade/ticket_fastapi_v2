@@ -34,7 +34,7 @@ async def validate_friendship(
     friend_id: int,
     user_id: int,
     session: AsyncSession,
-) -> FriendAlchemyModel:
+):
     stmt = select(FriendAlchemyModel).where(
         or_(
             and_(
@@ -48,8 +48,8 @@ async def validate_friendship(
         )
     )
     result: Result = await session.execute(stmt)
-    friend = result.scalars().all()
-    if friend:
+    friends = result.scalars().all()
+    if friends:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
@@ -57,3 +57,24 @@ async def validate_friendship(
                 f"and {friend_id} already friends",
             ),
         )
+
+async def validate_no_friendship(
+    friend_id: int,
+    user_id: int,
+    session: AsyncSession,
+):
+    stmt = select(FriendAlchemyModel).where(
+        or_(
+            and_(
+                FriendAlchemyModel.friend_id == friend_id,
+                FriendAlchemyModel.user_id == user_id,
+            ),
+            and_(
+                FriendAlchemyModel.friend_id == user_id,
+                FriendAlchemyModel.user_id == friend_id,
+            ),
+        )
+    )
+    result: Result = await session.execute(stmt)
+    friends = result.scalars().all()
+    return friends

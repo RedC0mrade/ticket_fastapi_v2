@@ -7,6 +7,7 @@ from app.validators.black_list import (
     validate_user_in_blacklist,
     validate_user_not_in_blacklist,
 )
+from app.validators.friends import validate_no_friendship
 
 
 class BlacklistServices:
@@ -35,13 +36,22 @@ class BlacklistServices:
             black_id=black_id,
             session=self.session,
         )
-        blacklist_user = BlackListAlchemyModel(
+        
+        friends = await validate_no_friendship(
             user_id=self.user.id,
-            black_id=black_id,
+            friend_id = black_id,
+            session=self.session,
         )
-        self.session.add(blacklist_user)
-        await self.session.commit()
-        return blacklist_user
+        if friends:
+            print(friends)
+            
+        # blacklist_user = BlackListAlchemyModel(
+        #     user_id=self.user.id,
+        #     black_id=black_id,
+        # )
+        # self.session.add(blacklist_user)
+        # await self.session.commit()
+        # return blacklist_user
 
     async def remove_from_blacklist(
         self,
