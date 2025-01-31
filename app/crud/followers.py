@@ -6,10 +6,14 @@ from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
 from app.core.schemas.user import UserBase
 from app.crud.friends import FriendService
+from app.validators.black_list import validate_user_not_in_blacklist
 from app.validators.follow import (
     validate_follow,
-    validate_follower_relationship,
+    validate_follow_fan,
+    validate_follow_fan_to_delete,
 )
+from app.validators.friends import validate_friendship
+from app.validators.general import validate_actions_with_same_id
 
 
 class FollowerService:
@@ -43,7 +47,13 @@ class FollowerService:
         self,
         follower_id: int,
     ):
-        follow = await validate_follower_relationship(
+
+        validate_actions_with_same_id(
+            user_id=self.user.id,
+            second_user_id=follower_id,
+        )
+
+        follow: FollowerAlchemyModel = await validate_follow_fan_to_delete(
             follower_id=follower_id,
             user_id=self.user.id,
             session=self.session,
@@ -55,7 +65,12 @@ class FollowerService:
         self,
         fan_id: int,
     ):
-        fan = await validate_follower_relationship(
+        validate_actions_with_same_id(
+            user_id=self.user.id,
+            second_user_id=fan_id,
+        )
+
+        fan: FollowerAlchemyModel = await validate_follow_fan_to_delete(
             follower_id=self.user.id,
             user_id=fan_id,
             session=self.session,
@@ -68,9 +83,28 @@ class FollowerService:
         follower_id: int,
     ) -> FollowerAlchemyModel | FriendAlchemyModel:
 
-        fan: FollowerAlchemyModel = await validate_follow(
+        validate_actions_with_same_id(
+            user_id=self.user.id,
+            second_user_id=follower_id,
+        )
+        await validate_user_not_in_blacklist(
+            black_id=follower_id,
+            user_id=self.user.id,
+            session=self.session,
+        )
+        await validate_follow(
             follower_id=follower_id,
             user_id=self.user.id,
+            session=self.session,
+        )
+        await validate_friendship(
+            friend_id=follower_id,
+            user_id=self.user.id,
+            session=self.session,
+        )
+        fan: FollowerAlchemyModel = await validate_follow_fan(
+            follower_id=self.user.id,
+            user_id=follower_id,
             session=self.session,
         )
 

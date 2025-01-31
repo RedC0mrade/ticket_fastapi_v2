@@ -3,19 +3,6 @@ from sqlalchemy import Result, and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
-from app.validators.black_list import validate_user_in_blacklist
-from .friends import validate_friendship
-
-
-def validate_follow_yourself(
-    follower_id: int,
-    user_id: int,
-):
-    if follower_id == user_id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="You can't follow youself",
-        )
 
 
 async def validate_follow(
@@ -23,21 +10,6 @@ async def validate_follow(
     user_id: int,
     session: AsyncSession,
 ) -> FollowerAlchemyModel:
-
-    validate_follow_yourself(
-        follower_id=follower_id,
-        user_id=user_id,
-    )
-    await validate_user_in_blacklist(
-        black_id=user_id,
-        user_id=follower_id,
-        session=session,
-    )
-    await validate_friendship(
-        friend_id=follower_id,
-        user_id=user_id,
-        session=session,
-    )
 
     stmt = select(FollowerAlchemyModel).where(
         and_(
@@ -57,40 +29,41 @@ async def validate_follow(
             ),
         )
 
-    stmt = select(FollowerAlchemyModel).where(
-        and_(
-            FollowerAlchemyModel.user_id == follower_id,
-            FollowerAlchemyModel.follower_id == user_id,
-        )
-    )
-    result: Result = await session.execute(stmt)
-    fan: FollowerAlchemyModel = result.scalar_one_or_none()
 
-    return fan
-
-
-async def validate_follower_relationship(
+async def validate_follow_fan_to_delete(
     follower_id: int,
     user_id: int,
     session: AsyncSession,
-) -> FollowerAlchemyModel:
-    validate_follow_yourself(
-        follower_id=follower_id,
-        user_id=user_id,
-    )
+):
     stmt = select(FollowerAlchemyModel).where(
         FollowerAlchemyModel.user_id == user_id,
         FollowerAlchemyModel.follower_id == follower_id,
     )
     result: Result = await session.execute(stmt)
-    follow = result.scalar_one_or_none()
+    follow_fan = result.scalar_one_or_none()
 
-    if not follow:
+    if not follow_fan:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
-                f"User with id = {user_id} don't have ",
-                f"follower with id = {follower_id}",
+                f"User with id = {user_id} don't",
+                f"relationship with id = {follower_id}",
             ),
         )
-    return follow
+    return follow_fan
+
+
+async def validate_follow_fan(
+    follower_id: int,
+    user_id: int,
+    session: AsyncSession,
+):
+    stmt = select(FollowerAlchemyModel).where(
+        FollowerAlchemyModel.user_id == user_id,
+        FollowerAlchemyModel.follower_id == follower_id,
+    )
+    result: Result = await session.execute(stmt)
+    follow_fan = result.scalar_one_or_none()
+
+    if follow_fan:
+        return follow_fan

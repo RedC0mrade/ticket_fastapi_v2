@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
 from app.core.schemas.user import UserBase
+from app.validators.friends import validate_friend, validate_no_friendship
+from app.validators.general import validate_actions_with_same_id
 
 
 class FriendService:
@@ -45,23 +47,18 @@ class FriendService:
         self,
         friend_id,
     ) -> None:
-
-        stmt = delete(FriendAlchemyModel).where(
-            or_(
-                and_(
-                    FriendAlchemyModel.user_id == self.user.id,
-                    FriendAlchemyModel.friend_id == friend_id
-                ),
-                and_(
-                    FriendAlchemyModel.user_id == friend_id,
-                    FriendAlchemyModel.friend_id == self.user.id
-                )
-            )
+        validate_actions_with_same_id(
+            user_id=self.user.id,
+            second_user_id=friend_id,
         )
-        await self.session.execute(stmt)
-        follow = FollowerAlchemyModel(
-            user_id=friend_id,
-            follower_id=self.user.id,
+        friends = await validate_friend(
+            friend_id=friend_id,
+            user_id=self.user.id,
         )
+        # await self.session.execute(stmt)
+        # follow = FollowerAlchemyModel(
+        #     user_id=friend_id,
+        #     follower_id=self.user.id,
+        # )
         self.session.add(follow)
         await self.session.commit()

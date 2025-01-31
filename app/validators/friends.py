@@ -58,11 +58,12 @@ async def validate_friendship(
             ),
         )
 
+
 async def validate_no_friendship(
     friend_id: int,
     user_id: int,
     session: AsyncSession,
-):
+) -> list[FriendAlchemyModel]:  # Can be []
     stmt = select(FriendAlchemyModel).where(
         or_(
             and_(

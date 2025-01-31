@@ -7,7 +7,9 @@ from app.validators.black_list import (
     validate_user_in_blacklist,
     validate_user_not_in_blacklist,
 )
+from app.validators.follow import validate_follow_fan
 from app.validators.friends import validate_no_friendship
+from app.validators.general import validate_actions_with_same_id
 
 
 class BlacklistServices:
@@ -31,33 +33,50 @@ class BlacklistServices:
         self,
         black_id: int,
     ):
-        await validate_user_in_blacklist(
+        validate_actions_with_same_id(
+            user_id=self.user.id,
+            second_user_id=black_id,
+        )
+        await validate_user_not_in_blacklist(
             user_id=self.user.id,
             black_id=black_id,
             session=self.session,
         )
-        
-        friends = await validate_no_friendship(
-            user_id=self.user.id,
-            friend_id = black_id,
+        follow = await validate_follow_fan(
+            user_id=black_id,
+            follower_id=self.user.id,
             session=self.session,
         )
+        if follow:
+            await self.session.delete(follow)
+
+        friends = await validate_no_friendship(
+            user_id=self.user.id,
+            friend_id=black_id,
+            session=self.session,
+        )
+
         if friends:
-            print(friends)
-            
-        # blacklist_user = BlackListAlchemyModel(
-        #     user_id=self.user.id,
-        #     black_id=black_id,
-        # )
-        # self.session.add(blacklist_user)
-        # await self.session.commit()
-        # return blacklist_user
+            for user in friends:
+                await self.session.delete(user)
+
+        blacklist_user = BlackListAlchemyModel(
+            user_id=self.user.id,
+            black_id=black_id,
+        )
+        self.session.add(blacklist_user)
+        await self.session.commit()
+        return blacklist_user
 
     async def remove_from_blacklist(
         self,
         black_id: int,
     ) -> None:
-        blaclist_user = await validate_user_not_in_blacklist(
+        validate_actions_with_same_id(
+            user_id=self.user.id,
+            second_user_id=black_id,
+        )
+        blaclist_user = await validate_user_in_blacklist(
             user_id=self.user.id,
             black_id=black_id,
             session=self.session,
