@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.models.message import MessageAlchemyModel
 from app.core.models.ticket import TicketAlchemyModel
 from app.core.schemas.user import UserBase
-from app.validators.message import validate_message
+from app.validators.message import MessageValidate
 from app.validators.ticket import validate_ticket
 
 
@@ -14,9 +14,11 @@ class MessageService:
         self,
         session: AsyncSession,
         user: UserBase,
+        valid_message: MessageValidate
     ):
         self.session = session
         self.user = user
+        self.valid_message = valid_message
 
     async def get_messages(
         self,
@@ -36,7 +38,7 @@ class MessageService:
         message_id: int,
     ) -> None:
 
-        message = await validate_message(
+        message = await self.valid_message(
             message_id=message_id,
             user=self.user,
             session=self.session,
@@ -89,7 +91,7 @@ class MessageService:
         message_text: str,
     ):
 
-        message: MessageAlchemyModel = await validate_message(
+        message: MessageAlchemyModel = await self.valid_message(
             message_id=message_id,
             user=self.user,
             session=self.session,

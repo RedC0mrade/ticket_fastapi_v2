@@ -7,7 +7,7 @@ from app.api.api_v1.messages import get_messages_service
 from app.core.schemas.ticket import Ticket, CreateTicket
 from app.core.schemas.user import UserBase
 from app.authentication.actions import current_auth_user
-from app.core.models.engine import db_helper
+from app.factories.database import db_helper
 from app.crud.messages import MessageService
 from app.crud.tickets import TicketService
 

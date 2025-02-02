@@ -12,7 +12,7 @@ __all__ = (
     "FriendAlchemyModel",
 )
 
-from .engine import db_helper
+from app.factories.database import db_helper
 from .base_model import Base
 from .user import UserAlchemyModel
 from .ticket import TicketAlchemyModel

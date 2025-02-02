@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.authentication.actions import current_auth_user
 from app.core.schemas.ticket_tag_association import TicketTagAssociation
 from app.core.schemas.user import UserBase
-from app.core.models.engine import db_helper
+from app.factories.database import db_helper
 from app.crud.ticket_tag_association import TicketTagAssociationService
 
 

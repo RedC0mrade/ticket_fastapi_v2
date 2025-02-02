@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.schemas.tag import CreateTag, Tag
-from app.core.models.engine import db_helper
+from app.factories.database import db_helper
 from app.crud.tags import TagService
 
 

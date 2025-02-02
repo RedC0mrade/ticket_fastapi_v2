@@ -1,22 +1,13 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 
-from app.authentication.actions import current_auth_user
-from app.core.models.engine import db_helper
 from app.core.schemas.message import Message
 from app.core.schemas.ticket import Ticket
-from app.core.schemas.user import User
 from app.crud.messages import MessageService
+from app.factories.message import get_messages_service
 
 
 router = APIRouter(tags=["Messages"])
 
-
-def get_messages_service(
-    session: AsyncSession = Depends(db_helper.session_getter),
-    user: User = Depends(current_auth_user),
-) -> MessageService:
-    return MessageService(session=session, user=user)
 
 
 @router.get("/{ticket_id}", response_model=list[Message])

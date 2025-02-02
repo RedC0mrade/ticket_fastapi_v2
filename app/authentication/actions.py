@@ -5,7 +5,7 @@ from jwt.exceptions import InvalidTokenError
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.models.engine import db_helper
+from app.factories.database import db_helper
 from app.core.models import UserAlchemyModel
 from app.core.schemas.user import User
 from app.authentication.password_utils import validate_password

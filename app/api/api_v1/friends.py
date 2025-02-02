@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.authentication.actions import current_auth_user
-from app.core.models.engine import db_helper
+from app.factories.database import db_helper
 from app.core.schemas.friend import GetFriend
 from app.core.schemas.user import UserBase
 from app.crud.friends import FriendService

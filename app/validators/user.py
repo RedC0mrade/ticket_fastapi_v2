@@ -4,19 +4,27 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.models.user import UserAlchemyModel
 
 
-async def validate_user(
-    user_id: int, session: AsyncSession
-) -> UserAlchemyModel:
+class UserValidation:
+    def __init__(
+        self,
+        session: AsyncSession,
+    ):
+        self.session = session
 
-    searched_user: UserAlchemyModel | None = await session.get(
-        UserAlchemyModel,
-        user_id,
-    )
+    async def validate_user(
+        self,
+        user_id: int,
+    ) -> UserAlchemyModel:
 
-    if not searched_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with id {user_id} not found",
+        searched_user: UserAlchemyModel | None = await self.session.get(
+            UserAlchemyModel,
+            user_id,
         )
 
-    return searched_user
+        if not searched_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with id {user_id} not found",
+            )
+
+        return searched_user

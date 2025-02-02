@@ -3,17 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.users import UserService
 from app.core.schemas.user import User, UserBase, UserPatch
-from app.core.models.engine import db_helper
+from app.factories.database import db_helper
 from app.authentication.actions import current_auth_user
+from app.factories.user import get_user_service
 
 router = APIRouter(tags=["Users"])
-
-
-def get_user_service(
-    session: AsyncSession = Depends(db_helper.session_getter),
-) -> UserService:
-    """Зависимость для получения экземпляра UserService."""
-    return UserService(session=session)
 
 
 @router.get("/", response_model=list[UserBase])

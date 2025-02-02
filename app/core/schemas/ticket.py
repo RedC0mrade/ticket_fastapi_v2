@@ -16,9 +16,7 @@ class Ticket(BaseModel):
     tags: List[Tag]
     amount: int
     acceptor: UserBase
-    acceptor_id: int
     executor: UserBase
-    executor_id: int
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 
 from app.authentication.actions import current_auth_user
-from app.core.models.engine import db_helper
+from app.factories.database import db_helper
 from app.core.schemas.black import BlackUser, BlacklistUser
 from app.core.schemas.user import User
 from app.crud.black import BlacklistServices

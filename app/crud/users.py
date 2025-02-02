@@ -6,15 +6,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.models.user import UserAlchemyModel
 from app.core.schemas.user import User, UserBase, UserPatch
 from app.authentication.password_utils import hash_password
-from app.validators.user import validate_user
-
+from app.validators.user import UserValidation
 
 class UserService:
     def __init__(
         self,
         session: AsyncSession,
+        valid_user: UserValidation,
     ):
         self.session = session
+        self.valid_user = valid_user
 
     async def get_users(self) -> List[UserAlchemyModel]:
         stmt = select(UserAlchemyModel)
@@ -26,7 +27,7 @@ class UserService:
         self,
         user_id: int,
     ) -> UserAlchemyModel | None:
-        return await validate_user(
+        return await self.valid_user(
             user_id=user_id,
             session=self.session,
         )
