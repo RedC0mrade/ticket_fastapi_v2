@@ -9,7 +9,6 @@ from app.factories.message import get_messages_service
 router = APIRouter(tags=["Messages"])
 
 
-
 @router.get("/{ticket_id}", response_model=list[Message])
 async def get_messages_from_ticket(
     ticket_id: int,

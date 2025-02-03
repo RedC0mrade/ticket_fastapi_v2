@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import Result, and_, delete, or_, select
+from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.follower import FollowerAlchemyModel
