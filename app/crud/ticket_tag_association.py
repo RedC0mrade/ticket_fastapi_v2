@@ -8,9 +8,9 @@ from app.core.models.ticket_tag_association import (
 )
 from app.core.models.ticket import TicketAlchemyModel
 from app.core.schemas.user import UserBase
-from app.validators.tag import validate_tags_in_base
-from app.validators.ticket_tag_association import validate_assosiation
-from app.validators.ticket import validate_ticket
+from app.validators.tag import TagValidation
+from app.validators.ticket import TicketValidation
+from app.validators.ticket_tag_association import AssociationValidation
 
 
 class TicketTagAssociationService:
@@ -18,9 +18,15 @@ class TicketTagAssociationService:
         self,
         session: AsyncSession,
         user: UserBase,
+        valid_asssociation: AssociationValidation,
+        valid_tag: TagValidation,
+        valid_ticket: TicketValidation,
     ):
         self.session = session
         self.user = user
+        self.valid_asssociation = valid_asssociation
+        self.valid_tag = valid_tag
+        self.valid_ticket = valid_ticket
 
     async def create_associations(
         self,
@@ -28,12 +34,12 @@ class TicketTagAssociationService:
         ticket_id: int,
     ) -> List[TicketTagAssociationAlchemyModel]:
 
-        ticket: TicketAlchemyModel = await validate_ticket(
+        ticket: TicketAlchemyModel = await self.valid_ticket.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
             session=self.session,
         )
-        await validate_tags_in_base(
+        await self.valid_tag.validate_tags_in_base(
             tags=tags_ids,
             session=self.session,
         )
@@ -45,7 +51,9 @@ class TicketTagAssociationService:
         association_data = [
             {"tag_id": tag_id, "ticket_id": ticket_id} for tag_id in tags_ids
         ]
-        stmt = insert(TicketTagAssociationAlchemyModel).values(association_data)
+        stmt = insert(TicketTagAssociationAlchemyModel).values(
+            association_data,
+        )
         await self.session.execute(stmt)
         await self.session.commit()
         return association_data
@@ -55,7 +63,7 @@ class TicketTagAssociationService:
         association_id: int,
     ) -> None:
         association: TicketTagAssociationAlchemyModel = (
-            await validate_assosiation(
+            await self.valid_asssociation.validate_assosiation(
                 assosiation_id=association_id,
                 session=self.session,
             )

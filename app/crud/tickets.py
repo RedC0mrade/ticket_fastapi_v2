@@ -11,8 +11,8 @@ from app.core.models.ticket_tag_association import (
 from app.core.schemas.ticket import CreateTicket
 from app.core.models.ticket import TicketAlchemyModel
 from app.crud.messages import MessageService
-from app.validators.tag import validate_tags_in_base
-from app.validators.ticket import validate_ticket
+from app.validators.tag import TagValidation
+from app.validators.ticket import TicketValidation
 
 
 class TicketService:
@@ -21,10 +21,14 @@ class TicketService:
         session: AsyncSession,
         user: UserBase,
         message_service: MessageService,
+        valid_tag: TagValidation,
+        valid_ticket: TicketValidation,
     ):
         self.session = session
         self.user = user
         self.message_service = message_service
+        self.valid_tag = valid_tag
+        self.valid_ticket = valid_ticket
 
     async def get_my_tasks(self) -> List[TicketAlchemyModel]:
         stmt = select(TicketAlchemyModel).where(
@@ -83,7 +87,7 @@ class TicketService:
         )
 
         if ticket_in.tags_id:
-            await validate_tags_in_base(
+            await self.valid_tag.validate_tags_in_base(
                 tags=ticket_in.tags_id,
                 session=self.session,
             )
@@ -152,7 +156,7 @@ class TicketService:
         current_tags_ids = set(result.scalars().all())
 
         if ticket_in.tags_id:
-            await validate_tags_in_base(
+            await self.valid_tag.validate_tags_in_base(
                 tags=ticket_in.tags_id,
                 session=self.session,
             )
@@ -174,7 +178,7 @@ class TicketService:
         self,
         ticket_id: int,
     ) -> None:
-        ticket: TicketAlchemyModel = validate_ticket(
+        ticket: TicketAlchemyModel = self.valid_ticket.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
             session=self.session,
@@ -186,12 +190,13 @@ class TicketService:
         self,
         ticket_id: int,
     ) -> TicketAlchemyModel:
-        ticket: TicketAlchemyModel = validate_ticket(
+        ticket: TicketAlchemyModel = self.valid_ticket.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
             session=self.session,
         )
         return ticket
+
 
 # async def update_ticket(ticket_id: int,
 #                         ticket_in: UpdateTicket,

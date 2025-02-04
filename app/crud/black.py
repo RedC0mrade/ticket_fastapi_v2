@@ -3,12 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.black_list_user import BlackListAlchemyModel
 from app.core.schemas.user import UserBase
-from app.validators.black_list import (
-    validate_user_in_blacklist,
-    validate_user_not_in_blacklist,
-)
-from app.validators.follow import validate_follow_fan
-from app.validators.friends import validate_no_friendship
+from app.validators.blacklist import BlacklistValidation
+# from app.validators.follow import validate_follow_fan
+# from app.validators.friends import validate_no_friendship
 from app.validators.general import validate_actions_with_same_id
 
 
@@ -17,9 +14,11 @@ class BlacklistServices:
         self,
         user: UserBase,
         session: AsyncSession,
+        valid_blacklict: BlacklistValidation,
     ):
         self.user = user
         self.session = session
+        self.valid_blacklict = valid_blacklict
 
     async def get_all_blacklist_users(self) -> list[BlackListAlchemyModel]:
         stmt = select(BlackListAlchemyModel).where(
@@ -37,7 +36,7 @@ class BlacklistServices:
             user_id=self.user.id,
             second_user_id=black_id,
         )
-        await validate_user_not_in_blacklist(
+        await self.valid_blacklict.validate_user_not_in_blacklist(
             user_id=self.user.id,
             black_id=black_id,
             session=self.session,
@@ -76,7 +75,7 @@ class BlacklistServices:
             user_id=self.user.id,
             second_user_id=black_id,
         )
-        blaclist_user = await validate_user_in_blacklist(
+        blaclist_user = await self.valid_blacklict.validate_user_in_blacklist(
             user_id=self.user.id,
             black_id=black_id,
             session=self.session,

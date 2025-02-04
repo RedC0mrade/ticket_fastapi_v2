@@ -1,19 +1,12 @@
 from typing import List
-from fastapi import APIRouter, Depends, Response
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends
 
 from app.core.schemas.tag import CreateTag, Tag
-from app.factories.database import db_helper
 from app.crud.tags import TagService
+from app.factories.tag import get_tag_service
 
 
 router = APIRouter(tags=["tags"])
-
-
-def get_tag_service(
-    session: AsyncSession = Depends(db_helper.session_getter),
-) -> TagService:
-    return TagService(session=session)
 
 
 @router.get("/", response_model=List[Tag])
@@ -35,7 +28,4 @@ async def delete_tag(
     tag_service: TagService = Depends(get_tag_service),
 ):
 
-    try:
-        await tag_service.delete_tag(tagt_id=tag_id)
-    except:
-        return Response(status_code=404, content="tag not found")
+    return await tag_service.delete_tag(tagt_id=tag_id)

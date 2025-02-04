@@ -1,24 +1,11 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 
-from app.authentication.actions import current_auth_user
-from app.factories.database import db_helper
+from app.factories.blacklist import get_blacklist_service
 from app.core.schemas.black import BlackUser, BlacklistUser
-from app.core.schemas.user import User
 from app.crud.black import BlacklistServices
 
 
 router = APIRouter(tags=["blacklist"])
-
-
-def get_blacklist_service(
-    user: User = Depends(current_auth_user),
-    session: AsyncSession = Depends(db_helper.session_getter),
-):
-    return BlacklistServices(
-        user=user,
-        session=session,
-    )
 
 
 @router.get(

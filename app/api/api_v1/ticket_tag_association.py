@@ -1,22 +1,14 @@
 from typing import List
-from fastapi import APIRouter, Depends, Response
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends
 
-from app.authentication.actions import current_auth_user
 from app.core.schemas.ticket_tag_association import TicketTagAssociation
-from app.core.schemas.user import UserBase
-from app.factories.database import db_helper
 from app.crud.ticket_tag_association import TicketTagAssociationService
+from app.factories.ticket_tag_associations import (
+    get_ticket_tags_association_service,
+)
 
 
 router = APIRouter(tags=["ticket_tag_association"])
-
-
-def get_ticket_tags_association_service(
-    session: AsyncSession = Depends(db_helper.session_getter),
-    user: UserBase = Depends(current_auth_user),
-) -> TicketTagAssociationService:
-    return TicketTagAssociationService(session=session)
 
 
 @router.delete(
@@ -30,15 +22,9 @@ async def delete_association(
     ),
 ):
 
-    try:
-        await ticket_tags_association_service.delete_association(
-            association_id=association_id,
-        )
-    except:
-        return Response(
-            status_code=404,
-            content="association not found",
-        )
+    return ticket_tags_association_service.delete_association(
+        association_id=association_id,
+    )
 
 
 @router.post(
