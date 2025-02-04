@@ -6,7 +6,7 @@ from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
 
 
-class BlacklistValidation:
+class RelationshipValidation:
     def __init__(
         self,
         session: AsyncSession,

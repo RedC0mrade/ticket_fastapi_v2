@@ -14,6 +14,7 @@ from app.validators.follow import (
 )
 from app.validators.friends import validate_friendship
 from app.validators.general import validate_actions_with_same_id
+from app.validators.relationship import RelationshipValidation
 
 
 class RelationshipService:
