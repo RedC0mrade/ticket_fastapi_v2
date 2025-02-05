@@ -6,7 +6,7 @@ from app.core.models.message import MessageAlchemyModel
 from app.core.models.ticket import TicketAlchemyModel
 from app.core.schemas.user import UserBase
 from app.validators.message import MessageValidate
-from app.validators.ticket import validate_ticket
+from app.validators.ticket import TicketValidation
 
 
 class MessageService:
@@ -14,18 +14,20 @@ class MessageService:
         self,
         session: AsyncSession,
         user: UserBase,
-        valid_message: MessageValidate
+        valid_message: MessageValidate,
+        valid_ticket: TicketValidation,
     ):
         self.session = session
         self.user = user
         self.valid_message = valid_message
+        self.valid_ticket = valid_ticket
 
     async def get_messages(
         self,
         ticket_id: int,
     ) -> List[MessageAlchemyModel]:
 
-        ticket: TicketAlchemyModel = await validate_ticket(
+        ticket: TicketAlchemyModel = await self.valid_ticket.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
             session=self.session,
@@ -52,7 +54,7 @@ class MessageService:
         ticket_id: int,
     ) -> TicketAlchemyModel:
 
-        ticket: TicketAlchemyModel = await validate_ticket(
+        ticket: TicketAlchemyModel = await self.valid_ticket.validate_ticket(
             ticket_id=ticket_id,
             session=self.session,
         )
@@ -71,7 +73,7 @@ class MessageService:
         message: str,
     ) -> MessageAlchemyModel:
 
-        await validate_ticket(
+        await self.valid_ticket.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
             session=self.session,

@@ -16,15 +16,15 @@ class UserValidation:
         user_id: int,
     ) -> UserAlchemyModel:
 
-        searched_user: UserAlchemyModel | None = await self.session.get(
+        valid_user: UserAlchemyModel | None = await self.session.get(
             UserAlchemyModel,
             user_id,
         )
 
-        if not searched_user:
+        if not valid_user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"User with id {user_id} not found",
             )
 
-        return searched_user
+        return valid_user

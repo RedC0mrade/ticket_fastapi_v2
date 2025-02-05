@@ -102,6 +102,7 @@ class RelationshipValidation:
         self,
         friend_id: int,
         user_id: int,
+        is_friend: bool = True,
     ):
         stmt = select(FriendAlchemyModel).where(
             or_(
@@ -117,7 +118,7 @@ class RelationshipValidation:
         )
         result: Result = await self.session.execute(stmt)
         friends = result.scalars().all()
-        if friends:
+        if friends and is_friend:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=(
@@ -125,24 +126,41 @@ class RelationshipValidation:
                     f"and {friend_id} already friends",
                 ),
             )
-
-    async def validate_no_friendship(
-        self,
-        friend_id: int,
-        user_id: int,
-    ) -> list[FriendAlchemyModel]:  # Can be []
-        stmt = select(FriendAlchemyModel).where(
-            or_(
-                and_(
-                    FriendAlchemyModel.friend_id == friend_id,
-                    FriendAlchemyModel.user_id == user_id,
-                ),
-                and_(
-                    FriendAlchemyModel.friend_id == user_id,
-                    FriendAlchemyModel.user_id == friend_id,
+        if not friends:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"Users with id's {user_id} ",
+                    f"and {friend_id} not a friends",
                 ),
             )
-        )
-        result: Result = await self.session.execute(stmt)
-        friends = result.scalars().all()
-        return friends
+        return friends        
+
+    # async def validate_no_friendship(
+    #     self,
+    #     friend_id: int,
+    #     user_id: int,
+    # ) -> list[FriendAlchemyModel]:
+    #     stmt = select(FriendAlchemyModel).where(
+    #         or_(
+    #             and_(
+    #                 FriendAlchemyModel.friend_id == friend_id,
+    #                 FriendAlchemyModel.user_id == user_id,
+    #             ),
+    #             and_(
+    #                 FriendAlchemyModel.friend_id == user_id,
+    #                 FriendAlchemyModel.user_id == friend_id,
+    #             ),
+    #         )
+    #     )
+    #     result: Result = await self.session.execute(stmt)
+    #     friends = result.scalars().all()
+    #     if not friends:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_400_BAD_REQUEST,
+    #             detail=(
+    #                 f"Users with id's {user_id} ",
+    #                 f"and {friend_id} not a friends",
+    #             ),
+    #         )
+    #     return friends
