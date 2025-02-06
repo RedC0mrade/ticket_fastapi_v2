@@ -1,5 +1,6 @@
+import enum
 from typing import TYPE_CHECKING
-from sqlalchemy import LargeBinary, String
+from sqlalchemy import Enum, LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base_model import Base
@@ -13,6 +14,12 @@ if TYPE_CHECKING:
     from app.core.models.black_list_user import BlackListAlchemyModel
 
 
+class UserRoleEnum(enum.Enum):
+    USER = "user"
+    ADMIN = "admin"
+    SUPER_USER = "super_user"
+
+
 class UserAlchemyModel(Base):
     __tablename__ = "users"
 
@@ -22,6 +29,11 @@ class UserAlchemyModel(Base):
     profile: Mapped["ProfileAlchemyModel"] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
+    )
+    user_role: Mapped[UserRoleEnum] = mapped_column(
+        Enum(UserRoleEnum),
+        default=UserRoleEnum.USER,
+        server_default="user",
     )
     friends: Mapped[list["FriendAlchemyModel"]] = relationship(
         back_populates="friend",

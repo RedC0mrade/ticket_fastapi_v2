@@ -5,14 +5,8 @@ from app.authentication.actions import current_auth_user
 from app.core.schemas.user import UserBase
 from app.crud.black import BlacklistServices
 from app.factories.database import db_helper
+from app.factories.validation_depends.blacklist import get_blacklist_validation
 from app.validators.blacklist import BlacklistValidation
-
-
-def get_blacklist_validation(
-    session: AsyncSession = Depends(db_helper.session_getter),
-) -> BlacklistValidation:
-    return BlacklistValidation(session=session)
-
 
 def get_blacklist_service(
     user: UserBase = Depends(current_auth_user),

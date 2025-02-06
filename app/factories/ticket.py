@@ -7,20 +7,9 @@ from app.crud.messages import MessageService
 from app.crud.tickets import TicketService
 from app.factories.message import get_messages_service
 from app.factories.tag import get_tag_validation
+from app.factories.validation_depends.ticket import get_ticket_validation
 from app.validators.tag import TagValidation
 from app.factories.database import db_helper
-
-
-def get_ticket_validation(
-    session: AsyncSession = Depends(db_helper.session_getter),
-    user: UserBase = Depends(current_auth_user),
-):
-    from app.validators.ticket import TicketValidation
-
-    return TicketValidation(
-        session=session,
-        user=user,
-    )
 
 
 def get_ticket_service(

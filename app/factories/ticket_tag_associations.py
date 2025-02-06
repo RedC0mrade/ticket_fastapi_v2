@@ -5,13 +5,8 @@ from app.authentication.actions import current_auth_user
 from app.core.schemas.user import UserBase
 from app.crud.ticket_tag_association import TicketTagAssociationService
 from app.factories.database import db_helper
+from app.factories.validation_depends.ticket_tag_association import get_association_validation
 from app.validators.ticket_tag_association import AssociationValidation
-
-
-def get_association_validation(
-    session: AsyncSession = Depends(db_helper.session_getter),
-) -> AssociationValidation:
-    return AssociationValidation(session=session)
 
 
 def get_ticket_tags_association_service(

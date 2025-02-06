@@ -7,17 +7,12 @@ from app.crud.relatonship import RelationshipService
 from app.factories.blacklist import get_blacklist_validation
 from app.factories.database import db_helper
 from app.factories.user import get_validation_user
+from app.factories.validation_depends.relationship import (
+    get_relationship_validation,
+)
 from app.validators.blacklist import BlacklistValidation
 from app.validators.relationship import RelationshipValidation
 from app.validators.user import UserValidation
-
-
-def get_relationship_validation(
-    session: AsyncSession = Depends(db_helper.session_getter),
-) -> RelationshipValidation:
-    return RelationshipValidation(
-        session=session,
-    )
 
 
 def get_relationship_service(
