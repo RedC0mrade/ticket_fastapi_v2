@@ -8,30 +8,21 @@ from app.factories.user import get_user_service
 router = APIRouter(tags=["Users"])
 
 
-@router.get(
-    "/",
-    response_model=list[UserBase],
-)
+@router.get("/", response_model=list[UserBase])
 async def get_users(
     user_service: UserService = Depends(get_user_service),
 ):
     return await user_service.get_users()
 
 
-@router.get(
-    "/me",
-    response_model=UserBase,
-)
+@router.get("/me", response_model=UserBase)
 def get_me(
     user: User = Depends(current_auth_user),
 ):
     return user
 
 
-@router.get(
-    "/{user_id}",
-    response_model=UserBase,
-)
+@router.get("/{user_id}", response_model=UserBase)
 async def get_user(
     user_id: int,
     user_service: UserService = Depends(get_user_service),
@@ -39,11 +30,7 @@ async def get_user(
     return await user_service.get_user(user_id)
 
 
-@router.post(
-    "/",
-    response_model=UserBase,
-    status_code=201,
-)
+@router.post("/", response_model=UserBase, status_code=201)
 async def create_user(
     user_create: User,
     user_service: UserService = Depends(get_user_service),
@@ -64,10 +51,7 @@ async def put_user(
     return Response(status_code=200, content=f"data changed {result}")
 
 
-@router.patch(
-    "/{user_id}",
-    response_model=User,
-)
+@router.patch("/{user_id}", response_model=User)
 async def patch_user(
     user_id: int,
     user_in: UserPatch,

@@ -58,7 +58,7 @@ class RelationshipService:
         )
 
         self.valid_user.validate_user(user_id=follower_id)
-        
+
         follow: FollowerAlchemyModel = (
             await self.valid_relationship.validate_follow_fan_to_delete(
                 follower_id=follower_id,
@@ -187,11 +187,11 @@ class RelationshipService:
         await self.session.commit()
 
         await self.create_follow_friendship()
-        
+
         follow = FollowerAlchemyModel(
             follower_id=self.user.id,
             user_id=friend_id,
         )
-        
+
         self.session.add(follow)
         await self.session.commit()

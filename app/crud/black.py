@@ -4,9 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.models.black_list_user import BlackListAlchemyModel
 from app.core.schemas.user import UserBase
 from app.validators.blacklist import BlacklistValidation
-# from app.validators.follow import validate_follow_fan
-# from app.validators.friends import validate_no_friendship
 from app.validators.general import validate_actions_with_same_id
+from app.validators.relationship import RelationshipValidation
 
 
 class BlacklistServices:
@@ -15,10 +14,12 @@ class BlacklistServices:
         user: UserBase,
         session: AsyncSession,
         valid_blacklict: BlacklistValidation,
+        valid_relationship: RelationshipValidation
     ):
         self.user = user
         self.session = session
         self.valid_blacklict = valid_blacklict
+        self.valid_relationship = valid_relationship
 
     async def get_all_blacklist_users(self) -> list[BlackListAlchemyModel]:
         stmt = select(BlackListAlchemyModel).where(
@@ -41,7 +42,7 @@ class BlacklistServices:
             black_id=black_id,
             session=self.session,
         )
-        follow = await validate_follow_fan(
+        follow = await self.valid_relationship.validate_follow_fan(
             user_id=black_id,
             follower_id=self.user.id,
             session=self.session,
@@ -49,7 +50,7 @@ class BlacklistServices:
         if follow:
             await self.session.delete(follow)
 
-        friends = await validate_no_friendship(
+        friends = await self.valid_relationship.validate_no_friendship(
             user_id=self.user.id,
             friend_id=black_id,
             session=self.session,

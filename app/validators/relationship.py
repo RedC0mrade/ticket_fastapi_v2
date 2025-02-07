@@ -134,7 +134,7 @@ class RelationshipValidation:
                     f"and {friend_id} not a friends",
                 ),
             )
-        return friends        
+        return friends
 
     # async def validate_no_friendship(
     #     self,
