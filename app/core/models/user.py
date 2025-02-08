@@ -1,6 +1,6 @@
 import enum
 from typing import TYPE_CHECKING
-from sqlalchemy import Enum, LargeBinary, String
+from sqlalchemy import LargeBinary, String, TypeDecorator
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base_model import Base
@@ -20,6 +20,22 @@ class UserRoleEnum(enum.Enum):
     SUPER_USER = "super_user"
 
 
+class UserRoleType(TypeDecorator):
+    impl = String
+
+    def process_bind_param(self, value, dialect):
+        """Преобразует Enum в строку при записи в БД"""
+        if value is None:
+            return None
+        return value.value  # Храним только строковое значение Enum
+
+    def process_result_value(self, value, dialect):
+        """Преобразует строку из БД обратно в Enum"""
+        if value is None:
+            return None
+        return UserRoleEnum(value)
+
+
 class UserAlchemyModel(Base):
     __tablename__ = "users"
 
@@ -31,7 +47,7 @@ class UserAlchemyModel(Base):
         cascade="all, delete-orphan",
     )
     user_role: Mapped[UserRoleEnum] = mapped_column(
-        Enum(UserRoleEnum),
+        UserRoleType(),
         default=UserRoleEnum.USER,
         server_default="user",
     )
