@@ -12,6 +12,7 @@ class UserService:
     def __init__(
         self,
         session: AsyncSession,
+        user: ,
         valid_user: UserValidation,
     ):
         self.session = session
