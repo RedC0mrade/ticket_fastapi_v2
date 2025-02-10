@@ -12,11 +12,12 @@ class UserService:
     def __init__(
         self,
         session: AsyncSession,
-        user: ,
+        # user: UserBase,
         valid_user: UserValidation,
     ):
         self.session = session
         self.valid_user = valid_user
+        # self.user = user
 
     async def get_users(self) -> List[UserAlchemyModel]:
         stmt = select(UserAlchemyModel)
@@ -27,7 +28,7 @@ class UserService:
     async def get_user(
         self,
         user_id: int,
-    ) -> UserAlchemyModel | None:
+    ) -> UserAlchemyModel:
         return await self.valid_user(
             user_id=user_id,
             session=self.session,

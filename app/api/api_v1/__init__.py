@@ -8,10 +8,15 @@ from .tags import router as tag_router
 from .relationship import router as relationship_router
 from .blacklist import router as blacklist_router
 from .ticket_tag_association import router as association_router
+from .test import router as test_router
 from app.authentication.views import router as auth_router
 
 router = APIRouter(prefix=settings.api.v1.prefix)
 
+router.include_router(
+    test_router,
+    prefix=settings.api.v1.test,
+)
 router.include_router(
     user_router,
     prefix=settings.api.v1.users,

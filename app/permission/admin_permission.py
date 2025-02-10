@@ -11,4 +11,4 @@ def check_role(allowed_role: list[UserRoleEnum]):
                 detail="Permission denied",
                 )
         return user
-    return Depends(_role_checker)
+    return _role_checker

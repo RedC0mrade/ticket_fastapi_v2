@@ -23,6 +23,7 @@ class ApiV1Prefix(BaseModel):
     messages: str = "/messages"
     blacklist: str = "/blacklist"
     auth: str = "/auth"
+    test:str = "/test"
 
 
 class ApiPrefix(BaseModel):
