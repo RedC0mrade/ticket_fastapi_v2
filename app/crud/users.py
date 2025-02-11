@@ -8,6 +8,7 @@ from app.core.schemas.user import User, UserBase, UserPatch
 from app.authentication.password_utils import hash_password
 from app.validators.user import UserValidation
 
+
 class UserService:
     def __init__(
         self,

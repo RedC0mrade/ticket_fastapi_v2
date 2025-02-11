@@ -5,6 +5,7 @@ from jwt.exceptions import InvalidTokenError
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.models.user import UserRoleEnum
 from app.factories.database import db_helper
 from app.core.models import UserAlchemyModel
 from app.core.schemas.user import User
@@ -73,6 +74,20 @@ async def current_auth_user(
     result: Result = await session.execute(stmt)
     user = result.scalar_one()
     return user
+
+
+def check_role(allowed_role: list[UserRoleEnum]):
+    def _role_checker(
+        user: UserAlchemyModel = Depends(current_auth_user),
+    ):
+        if user.user_role not in allowed_role:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Permission denied",
+            )
+        return user
+
+    return _role_checker
 
 
 def create_token(
