@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 class TagAlchemyModel(Base):
     __tablename__ = "tags"
 
-    tag_name: Mapped[str] = mapped_column(String(30))
-    tag_color: Mapped[str] = mapped_column(String(7))
+    tag_name: Mapped[str] = mapped_column(String(30), unique=True)
+    tag_color: Mapped[str] = mapped_column(String(7), unique=True)
 
     tickets: Mapped[list["TicketAlchemyModel"]] = relationship(
         secondary="ticket_tag", back_populates="tags"

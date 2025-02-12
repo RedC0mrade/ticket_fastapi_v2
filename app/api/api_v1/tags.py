@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends
 from app.authentication.actions import check_role
 from app.core.models.user import UserRoleEnum
 from app.core.schemas.tag import CreateTag, Tag
-from app.core.schemas.user import UserBase
 from app.crud.tags import TagService
 from app.factories.tag import get_tag_service
 
@@ -21,7 +20,7 @@ async def get_all_tags(tag_service: TagService = Depends(get_tag_service)):
 async def create_tag(
     tag_in: CreateTag,
     tag_service: TagService = Depends(get_tag_service),
-    user: UserBase = Depends(
+    _: None = Depends(
         check_role([UserRoleEnum.ADMIN, UserRoleEnum.SUPER_USER])
     ),
 ):
@@ -32,7 +31,7 @@ async def create_tag(
 async def delete_tag(
     tag_id: int,
     tag_service: TagService = Depends(get_tag_service),
-    user: UserBase = Depends(
+    _: None = Depends(
         check_role(
             [
                 UserRoleEnum.ADMIN,

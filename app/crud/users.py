@@ -13,12 +13,10 @@ class UserService:
     def __init__(
         self,
         session: AsyncSession,
-        # user: UserBase,
         valid_user: UserValidation,
     ):
         self.session = session
         self.valid_user = valid_user
-        # self.user = user
 
     async def get_users(self) -> List[UserAlchemyModel]:
         stmt = select(UserAlchemyModel)
@@ -49,7 +47,7 @@ class UserService:
         self,
         user_in: User,
         user_id: int,
-    ) -> dict:
+    ) -> UserBase:
         user_in.password = hash_password(user_in.password)
         new_values: dict = user_in.model_dump()
         user = (
@@ -59,7 +57,8 @@ class UserService:
         )
         await self.session.execute(user)
         await self.session.commit()
-        return new_values
+        user = await self.session.get(UserAlchemyModel, user_id)
+        return user
 
     async def patch_user(
         self,
