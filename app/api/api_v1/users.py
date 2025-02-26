@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Response, Depends
 
+from app.core.models.user import UserRoleEnum
 from app.crud.users import UserService
 from app.core.schemas.user import User, UserBase, UserPatch
-from app.authentication.actions import current_auth_user
+from app.authentication.actions import check_role, current_auth_user
 from app.factories.user import get_user_service
 
 router = APIRouter(tags=["Users"])
@@ -24,10 +25,18 @@ def get_me(
 
 @router.get("/", response_model=UserBase)
 async def get_user(
-    user: UserBase = Depends(current_auth_user),
+    user: UserBase = Depends(
+        check_role(
+            [
+                UserRoleEnum.USER,
+                UserRoleEnum.ADMIN,
+                UserRoleEnum.SUPER_USER,
+            ]
+        )
+    ),
     user_service: UserService = Depends(get_user_service),
 ):
-    return await user_service.get_user(user.id)
+    return await user_service.get_user(user_id=user.id)
 
 
 @router.post("/", response_model=UserBase, status_code=201)
