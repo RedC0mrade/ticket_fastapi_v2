@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.models.user import UserRoleEnum
 from app.factories.database import db_helper
 from app.core.models import UserAlchemyModel
-from app.core.schemas.user import User
+from app.core.schemas.user import User, UserWithRole
 from app.authentication.password_utils import validate_password
 from app.authentication.token_utils import encode_token, decoded_token
 from app.constant import TOKEN_TYPE, ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE
@@ -52,7 +52,7 @@ async def user_validate(
 async def current_auth_user(
     session: AsyncSession = Depends(db_helper.session_getter),
     token: str = Depends(oauth2_scheme),
-) -> User:
+) -> UserWithRole:
     try:
         payload: dict = decoded_token(token=token)
     except InvalidTokenError:
@@ -76,11 +76,13 @@ async def current_auth_user(
     return user
 
 
-def check_role(allowed_role: list[UserRoleEnum]):
+def user_authorization(
+    allowed_role: list[UserRoleEnum] | None = None,
+) -> UserWithRole:
     def _role_checker(
         user: UserAlchemyModel = Depends(current_auth_user),
     ):
-        if user.user_role not in allowed_role:
+        if allowed_role and user.user_role not in allowed_role:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Permission denied",

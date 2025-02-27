@@ -27,7 +27,7 @@ class UserRoleType(TypeDecorator):
         """Преобразует Enum в строку при записи в БД"""
         if value is None:
             return None
-        return value.value  # Храним только строковое значение Enum
+        return value.value
 
     def process_result_value(self, value, dialect):
         """Преобразует строку из БД обратно в Enum"""

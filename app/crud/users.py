@@ -28,14 +28,13 @@ class UserService:
         self,
         user_id: int,
     ) -> UserAlchemyModel:
-        return await self.valid_user(
+        return await self.valid_user.validate_user(
             user_id=user_id,
-            session=self.session,
         )
 
     async def create_user(
         self,
-        user_in: UserBase,
+        user_in: User,
     ) -> UserAlchemyModel:
         user_in.password = hash_password(user_in.password)
         new_user = UserAlchemyModel(**user_in.model_dump())
