@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends
 
-from app.authentication.actions import user_authorization
+from app.authentication.actions import cheak_permission
 from app.core.models.user import UserRoleEnum
 from app.core.schemas.tag import CreateTag, Tag
 from app.crud.tags import TagService
@@ -21,7 +21,7 @@ async def create_tag(
     tag_in: CreateTag,
     tag_service: TagService = Depends(get_tag_service),
     _: None = Depends(
-        user_authorization([UserRoleEnum.ADMIN, UserRoleEnum.SUPER_USER])
+        cheak_permission([UserRoleEnum.ADMIN, UserRoleEnum.SUPER_USER])
     ),
 ):
     return await tag_service.create_tag(tag_in=tag_in)
@@ -32,7 +32,7 @@ async def delete_tag(
     tag_id: int,
     tag_service: TagService = Depends(get_tag_service),
     _: None = Depends(
-        user_authorization(
+        cheak_permission(
             [
                 UserRoleEnum.ADMIN,
                 UserRoleEnum.SUPER_USER,

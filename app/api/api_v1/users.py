@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Response, Depends
 
-from app.core.models.user import UserRoleEnum
 from app.crud.users import UserService
 from app.core.schemas.user import User, UserBase, UserPatch
-from app.authentication.actions import user_authorization, current_auth_user
+from app.authentication.actions import current_auth_user
 from app.factories.user import get_user_service
 
 router = APIRouter(tags=["Users"])
@@ -52,14 +51,14 @@ async def put_user(
     )
 
 
-@router.patch("/{user_id}", response_model=User)
+@router.patch("/", response_model=UserBase)
 async def patch_user(
-    user_id: int,
     user_in: UserPatch,
     user_service: UserService = Depends(get_user_service),
+    user: UserBase = Depends(current_auth_user),
 ):
     result: dict = await user_service.patch_user(
-        user_in=user_in, user_id=user_id
+        user_in=user_in, user_id=user.id
     )
     return Response(status_code=200, content=f"data changed {result}")
 

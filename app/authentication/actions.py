@@ -76,7 +76,7 @@ async def current_auth_user(
     return user
 
 
-def user_authorization(
+def cheak_permission(
     allowed_role: list[UserRoleEnum] | None = None,
 ) -> UserWithRole:
     def _role_checker(
