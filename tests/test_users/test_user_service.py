@@ -6,7 +6,6 @@ from app.factories.user import UserService
 from app.validators.user import UserValidation
 
 
-@pytest.mark.asyncio
 async def test_get_users(
     session: AsyncSession,
     uservalidation: UserValidation,

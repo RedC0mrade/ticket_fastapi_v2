@@ -22,6 +22,7 @@ class UserRoleEnum(enum.Enum):
 
 class UserRoleType(TypeDecorator):
     impl = String
+    cache_ok = True
 
     def process_bind_param(self, value, dialect):
         """Преобразует Enum в строку при записи в БД"""

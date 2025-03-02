@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.models.base_model import Base
+from app.core.models.user import UserAlchemyModel
 from app.validators.user import UserValidation
 
 
@@ -25,3 +26,33 @@ async def session():
 @pytest.fixture(scope="function")
 def uservalidation(session):
     return UserValidation(session)
+
+
+@pytest.fixture(scope="function")
+async def first_user(session: AsyncSession):
+
+    user = UserAlchemyModel(
+        id=1,
+        username="first_user",
+        password=b"password",
+        email="first_user@mail.ru",
+    )
+
+    session.add(user)
+    await session.commit()
+    return user
+
+
+@pytest.fixture(scope="function")
+async def second_user(session: AsyncSession):
+
+    user = UserAlchemyModel(
+        id=2,
+        username="second_user",
+        password=b"password",
+        email="second_user@mail.ru",
+    )
+
+    session.add(user)
+    await session.commit()
+    return user
