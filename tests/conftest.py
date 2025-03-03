@@ -24,7 +24,7 @@ async def session():
 
 
 @pytest.fixture(scope="function")
-def uservalidation(session):
+def user_validation(session):
     return UserValidation(session)
 
 

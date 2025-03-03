@@ -6,31 +6,49 @@ from app.factories.user import UserService
 from app.validators.user import UserValidation
 
 
-async def test_get_users(
-    session: AsyncSession,
-    uservalidation: UserValidation,
-):
+class TestUserServise:
 
-    test_users = [
-        UserAlchemyModel(
-            username="Alice",
-            password=b"password",
-            email="alice.@mail.com",
-        ),
-        UserAlchemyModel(
-            username="Bob",
-            password=b"password",
-            email="bob.@mail.com",
-        ),
-    ]
-    session.add_all(test_users)
-    await session.commit()
-
-    user_service = UserService(
-        session=session,
-        valid_user=uservalidation,
+    @pytest.fixture(
+        scope="function",
+        autouse=True,
     )
-    users = await user_service.get_users()
-    assert len(users) == 2
-    assert users[0].username == "Alice"
-    assert users[1].username == "Bob"
+    async def setup(
+        self,
+        session: AsyncSession,
+        user_validation: UserValidation,
+    ):
+        self.session = session
+        self.user_validation = user_validation
+        self.user_service = UserService(
+            self.session,
+            self.user_validation,
+        )
+
+    async def test_get_users(self):
+
+        test_users = [
+            UserAlchemyModel(
+                username="user",
+                password=b"password",
+                email="user@mail.com",
+            ),
+            UserAlchemyModel(
+                username="user#2",
+                password=b"password",
+                email="user#2@mail.com",
+            ),
+        ]
+        self.session.add_all(test_users)
+        await self.session.commit()
+
+        users = await self.user_service.get_users()
+        assert len(users) == 2
+        assert users[0].username == "user"
+        assert users[0].email == "user@mail.com"
+        assert users[1].username == "user#2"
+        assert users[1].email == "user#2@mail.com"
+
+    async def test_get_no_users_in_base(self):
+
+        users = await self.user_service.get_users()
+        assert len(users) == 0
