@@ -24,17 +24,21 @@ class TagService:
         tags = result.scalars().all()
         return list(tags)
 
-    async def create_tag(
+    async def create_tags(
         self,
-        tag_in: CreateTag,
-    ) -> TagAlchemyModel:
-        tag = TagAlchemyModel(
-            tag_name=tag_in.tag_name,
-            tag_color=tag_in.tag_color,
-        )
-        self.session.add(tag)
+        tags_in: list[CreateTag],
+    ) -> list[TagAlchemyModel]:
+        tags = [
+            TagAlchemyModel(
+                tag_name=tag.tag_name,
+                tag_color=tag.tag_color,
+            )
+            for tag in tags_in
+        ]
+
+        self.session.add_all(tags)
         await self.session.commit()
-        return tag
+        return tags
 
     async def delete_tag(
         self,

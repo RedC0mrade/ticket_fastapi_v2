@@ -16,7 +16,7 @@ async def get_all_tags(tag_service: TagService = Depends(get_tag_service)):
     return await tag_service.get_all_tags()
 
 
-@router.post("/create_tag", response_model=Tag)
+@router.post("/create_tag", response_model=list[Tag])
 async def create_tag(
     tag_in: CreateTag,
     tag_service: TagService = Depends(get_tag_service),
@@ -24,7 +24,7 @@ async def create_tag(
         cheak_permission([UserRoleEnum.ADMIN, UserRoleEnum.SUPER_USER])
     ),
 ):
-    return await tag_service.create_tag(tag_in=tag_in)
+    return await tag_service.create_tags(tag_in=tag_in)
 
 
 @router.delete("/{tag_id}", status_code=204)

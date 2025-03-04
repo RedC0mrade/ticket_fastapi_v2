@@ -1,9 +1,12 @@
-# alembic downgrade -1
-# alembic upgrade head
-# alembic revision --autogenerate -m "описание миграции"
-# docker compose up
-# CREATE TYPE userroleenum AS ENUM ('admin', 'user', 'super_user');
+def fibonacci():
+    a = 0
+    b = 1
+    while True:
+        yield a
+        a, b = b, a + b
 
-# UPDATE users
-# SET user_role = 'super_user'
-# WHERE id = 1;
+
+d = fibonacci()
+
+for _ in range(10):
+    print(next(d))
