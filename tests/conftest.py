@@ -1,8 +1,10 @@
 import pytest
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.models.base_model import Base
 from app.core.models.user import UserAlchemyModel
+from app.core.schemas.user import UserBase
 from app.validators.user import UserValidation
 
 
@@ -24,12 +26,21 @@ async def session():
 
 
 @pytest.fixture(scope="function")
+async def empty_db(session: AsyncSession):
+    """Очищает базу перед тестом"""
+    await session.execute(
+        delete(UserAlchemyModel)
+    )
+    await session.commit()
+
+
+@pytest.fixture(scope="function")
 def user_validation(session):
     return UserValidation(session)
 
 
 @pytest.fixture(scope="function")
-async def first_user(session: AsyncSession):
+async def first_user(session: AsyncSession) -> UserBase:
 
     user = UserAlchemyModel(
         id=1,
@@ -39,7 +50,9 @@ async def first_user(session: AsyncSession):
     )
 
     session.add(user)
+    await session.flush()
     await session.commit()
+    await session.refresh(user)
     return user
 
 
@@ -54,5 +67,7 @@ async def second_user(session: AsyncSession):
     )
 
     session.add(user)
+    await session.flush()
     await session.commit()
+    await session.refresh(user)
     return user
