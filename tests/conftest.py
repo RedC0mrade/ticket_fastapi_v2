@@ -28,9 +28,7 @@ async def session():
 @pytest.fixture(scope="function")
 async def empty_db(session: AsyncSession):
     """Очищает базу перед тестом"""
-    await session.execute(
-        delete(UserAlchemyModel)
-    )
+    await session.execute(delete(UserAlchemyModel))
     await session.commit()
 
 
@@ -54,6 +52,17 @@ async def first_user(session: AsyncSession) -> UserBase:
     await session.commit()
     await session.refresh(user)
     return user
+
+
+@pytest.fixture(scope="function")
+async def first_user_current_auth(
+    first_user: UserBase,
+    session: AsyncSession,
+):
+    def mock_user():
+        return first_user
+    
+    return mock_user
 
 
 @pytest.fixture(scope="function")

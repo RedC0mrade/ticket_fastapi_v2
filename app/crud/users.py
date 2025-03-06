@@ -1,8 +1,10 @@
 from typing import List
 
+from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.authentication.actions import current_auth_user
 from app.core.models.user import UserAlchemyModel
 from app.core.schemas.user import User, UserBase, UserPatch
 from app.authentication.password_utils import hash_password
@@ -45,18 +47,18 @@ class UserService:
     async def put_user(
         self,
         user_in: User,
-        user_id: int,
+        user: UserBase = Depends(current_auth_user)
     ) -> UserBase:
         user_in.password = hash_password(user_in.password)
         new_values: dict = user_in.model_dump()
         user = (
             update(UserAlchemyModel)
-            .where(UserAlchemyModel.id == user_id)
+            .where(UserAlchemyModel.id == user.id)
             .values(new_values)
         )
         await self.session.execute(user)
         await self.session.commit()
-        user = await self.session.get(UserAlchemyModel, user_id)
+        user = await self.session.get(UserAlchemyModel, user.id)
         return user
 
     async def patch_user(
