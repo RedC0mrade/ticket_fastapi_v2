@@ -87,8 +87,8 @@ async def patch_user(
     status_code=204,
 )
 async def delete_user(
-    user_id: int,
+    user: UserBase = Depends(current_auth_user),
     user_service: UserService = Depends(get_user_service),
 ):
-    await user_service.delete_user(user_id=user_id)
+    await user_service.delete_user(user_id=user.id)
     return Response(status_code=204)

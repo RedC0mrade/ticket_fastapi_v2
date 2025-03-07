@@ -2,10 +2,9 @@ from fastapi import HTTPException
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.authentication.actions import current_auth_user
 from app.core.models import UserAlchemyModel
 from app.core.models.user import UserRoleEnum
-from app.core.schemas.user import User, UserBase
+from app.core.schemas.user import User, UserBase, UserPatch
 from app.factories.user import UserService
 from app.validators.user import UserValidation
 
@@ -79,6 +78,37 @@ class TestUserServiсe:
         assert isinstance(user.password, bytes)
         assert user.user_role == UserRoleEnum.USER
 
-    async def test_put_user(self, first_user_current_auth):
+    async def test_put_user(self):
 
-        main_app.dependency_overrides[current_auth_user]
+        user_in = User(
+            username="new_name",
+            password="new_password",
+            email="new@mail.ru",
+        )
+        user: UserAlchemyModel = await self.user_service.put_user(
+            user_in,
+            user_id=self.first_user.id,
+        )
+
+        assert user.username == "new_name"
+        assert isinstance(user.password, bytes)
+        assert user.email == "new@mail.ru"
+
+    async def test_patch_user(self):
+
+        user_in = UserPatch(
+            username="new_name",
+        )
+
+        user: UserAlchemyModel = await self.user_service.patch_user(
+            user_in, user_id=self.first_user.id
+        )
+        assert user.username == "new_name"
+        assert user.email == self.first_user.email
+
+    async def test_delete_user(self):
+
+        await self.user_service.delete_user(self.first_user.id)
+        users: list[UserBase] = await self.user_service.get_users()
+        assert len(users) == 1
+        assert users[0].username == "second_user"

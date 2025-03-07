@@ -1,10 +1,8 @@
 from typing import List
 
-from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.authentication.actions import current_auth_user
 from app.core.models.user import UserAlchemyModel
 from app.core.schemas.user import User, UserBase, UserPatch
 from app.authentication.password_utils import hash_password
@@ -44,22 +42,33 @@ class UserService:
         await self.session.commit()
         return new_user
 
+    async def _update_user(
+        self,
+        user_id: int,
+        new_values: dict,
+    ) -> UserAlchemyModel:
+        user_stmt = (
+            update(UserAlchemyModel)
+            .where(UserAlchemyModel.id == user_id)
+            .values(new_values)
+            .returning(UserAlchemyModel)
+        )
+        result = await self.session.execute(user_stmt)
+        updated_user = result.scalar_one()
+        await self.session.commit()
+        return updated_user
+
     async def put_user(
         self,
         user_in: User,
-        user: UserBase = Depends(current_auth_user)
+        user_id: int,
     ) -> UserBase:
         user_in.password = hash_password(user_in.password)
         new_values: dict = user_in.model_dump()
-        user = (
-            update(UserAlchemyModel)
-            .where(UserAlchemyModel.id == user.id)
-            .values(new_values)
+        return await self._update_user(
+            user_id=user_id,
+            new_values=new_values,
         )
-        await self.session.execute(user)
-        await self.session.commit()
-        user = await self.session.get(UserAlchemyModel, user.id)
-        return user
 
     async def patch_user(
         self,
@@ -69,14 +78,11 @@ class UserService:
         new_values: dict = user_in.model_dump(exclude_unset=True)
         if new_values.get("password"):
             new_values["password"] = hash_password(user_in.password)
-        user = (
-            update(UserAlchemyModel)
-            .where(UserAlchemyModel.id == user_id)
-            .values(new_values)
+
+        return await self._update_user(
+            user_id=user_id,
+            new_values=new_values,
         )
-        await self.session.execute(user)
-        await self.session.commit()
-        return new_values
 
     async def delete_user(
         self,
