@@ -4,7 +4,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.user import UserAlchemyModel
-from app.core.schemas.user import User, UserBase, UserPatch
+from app.core.schemas.user import UserCreate, UserBase, UserPatch
 from app.authentication.password_utils import hash_password
 from app.validators.user import UserValidation
 
@@ -34,7 +34,7 @@ class UserService:
 
     async def create_user(
         self,
-        user_in: User,
+        user_in: UserCreate,
     ) -> UserAlchemyModel:
         user_in.password = hash_password(user_in.password)
         new_user = UserAlchemyModel(**user_in.model_dump())
@@ -60,7 +60,7 @@ class UserService:
 
     async def put_user(
         self,
-        user_in: User,
+        user_in: UserCreate,
         user_id: int,
     ) -> UserBase:
         user_in.password = hash_password(user_in.password)

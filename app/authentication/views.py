@@ -3,7 +3,7 @@ from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from jwt import InvalidTokenError
 
-from app.core.schemas.user import User
+from app.core.schemas.user import UserCreate
 from app.authentication.schema import Token
 from app.authentication.actions import (
     user_validate,
@@ -19,7 +19,7 @@ router = APIRouter(tags=["auth"])
 
 
 @router.post("/login", response_model=Token)
-def user_login(user: User = Depends(user_validate)) -> Token:
+def user_login(user: UserCreate = Depends(user_validate)) -> Token:
 
     create = create_acces_token(user)
     refresh = refresh_token(user)
@@ -51,7 +51,9 @@ def validate_token_type(payload: dict, token_type: str) -> bool:
     )
 
 
-async def get_user_by_token_sub(payload: dict, session: AsyncSession) -> User:
+async def get_user_by_token_sub(
+    payload: dict, session: AsyncSession
+) -> UserCreate:
     username: str | None = payload.get("sub")
     if not username:
         raise HTTPException(
@@ -83,11 +85,9 @@ class UserGetterFromToken:
 get_current_user_for_refresh = UserGetterFromToken(REFRESH_TOKEN_TYPE)
 
 
-@router.post(
-    "/refresh", response_model=Token, response_model_exclude_none=True
-)
+@router.post("/refresh", response_model=Token, response_model_exclude_none=True)
 def user_refresh(
-    user: User = Depends(
+    user: UserCreate = Depends(
         UserGetterFromToken(REFRESH_TOKEN_TYPE),
     )
 ):

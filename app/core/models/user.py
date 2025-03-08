@@ -1,8 +1,8 @@
 import enum
 from typing import TYPE_CHECKING
-from sqlalchemy import LargeBinary, String, TypeDecorator
+from sqlalchemy import Boolean, LargeBinary, String, TypeDecorator
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from fastapi_users.db import SQLAlchemyBaseUserTable
 from .base_model import Base
 
 
@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 class UserRoleEnum(enum.Enum):
     USER = "user"
     ADMIN = "admin"
-    SUPER_USER = "super_user"
 
 
 class UserRoleType(TypeDecorator):
@@ -37,12 +36,16 @@ class UserRoleType(TypeDecorator):
         return UserRoleEnum(value)
 
 
-class UserAlchemyModel(Base):
+class UserAlchemyModel(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(String(30), unique=True)
     password: Mapped[bytes] = mapped_column(LargeBinary)
     email: Mapped[str] = mapped_column(String(255), unique=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+
     profile: Mapped["ProfileAlchemyModel"] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",

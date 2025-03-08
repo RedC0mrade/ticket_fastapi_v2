@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends
 
 from app.crud.users import UserService
-from app.core.schemas.user import User, UserBase, UserPatch
+from app.core.schemas.user import UserCreate, UserBase, UserPatch
 from app.authentication.actions import current_auth_user
 from app.factories.user import get_user_service
 
@@ -45,7 +45,7 @@ async def get_user(
     status_code=201,
 )
 async def create_user(
-    user_create: User,
+    user_create: UserCreate,
     user_service: UserService = Depends(get_user_service),
 ):
     return await user_service.create_user(user_create)
@@ -56,7 +56,7 @@ async def create_user(
     response_model=UserBase,
 )
 async def put_user(
-    user_in: User,
+    user_in: UserCreate,
     user_service: UserService = Depends(get_user_service),
     user: UserBase = Depends(current_auth_user),
 ):
