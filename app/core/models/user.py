@@ -1,6 +1,5 @@
-import enum
 from typing import TYPE_CHECKING
-from sqlalchemy import Boolean, LargeBinary, String, TypeDecorator
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from .base_model import Base
@@ -14,47 +13,21 @@ if TYPE_CHECKING:
     from app.core.models.black_list_user import BlackListAlchemyModel
 
 
-class UserRoleEnum(enum.Enum):
-    USER = "user"
-    ADMIN = "admin"
-
-
-class UserRoleType(TypeDecorator):
-    impl = String
-    cache_ok = True
-
-    def process_bind_param(self, value, dialect):
-        """Преобразует Enum в строку при записи в БД"""
-        if value is None:
-            return None
-        return value.value
-
-    def process_result_value(self, value, dialect):
-        """Преобразует строку из БД обратно в Enum"""
-        if value is None:
-            return None
-        return UserRoleEnum(value)
-
-
-class UserAlchemyModel(SQLAlchemyBaseUserTable[int], Base):
+class UserAlchemyModel(Base, SQLAlchemyBaseUserTable[int]):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(String(30), unique=True)
-    password: Mapped[bytes] = mapped_column(LargeBinary)
-    email: Mapped[str] = mapped_column(String(255), unique=True)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
-    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    # password: Mapped[str] = mapped_column(String(255), nullable=False)
+    # email: Mapped[str] = mapped_column(String(255), unique=True)
+    # is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    # is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
+    # is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
 
     profile: Mapped["ProfileAlchemyModel"] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
     )
-    user_role: Mapped[UserRoleEnum] = mapped_column(
-        UserRoleType(),
-        default=UserRoleEnum.USER,
-        server_default="user",
-    )
+
     friends: Mapped[list["FriendAlchemyModel"]] = relationship(
         back_populates="friend",
         foreign_keys="[FriendAlchemyModel.friend_id]",

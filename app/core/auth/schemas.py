@@ -17,6 +17,9 @@ class UserUpdate(schemas.BaseUserUpdate):
 
 
 class UserRead(schemas.BaseUser[int]):
+    id: int
     username: str
     email: EmailStr
-    user_role: UserRoleEnum
+    is_active: bool
+    is_superuser: bool
+    is_verified: bool

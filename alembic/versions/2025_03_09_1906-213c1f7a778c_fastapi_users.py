@@ -1,8 +1,8 @@
-"""create tables
+"""fastapi users
 
-Revision ID: e4fdfb44f425
+Revision ID: 213c1f7a778c
 Revises: 
-Create Date: 2025-02-08 19:15:40.499289
+Create Date: 2025-03-09 19:06:57.480318
 
 """
 
@@ -11,10 +11,8 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from app.core.models.user import UserRoleType
 
-
-revision: str = "e4fdfb44f425"
+revision: str = "213c1f7a778c"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,23 +25,22 @@ def upgrade() -> None:
         sa.Column("tag_color", sa.String(length=7), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_tags")),
+        sa.UniqueConstraint("tag_color", name=op.f("uq_tags_tag_color")),
+        sa.UniqueConstraint("tag_name", name=op.f("uq_tags_tag_name")),
     )
     op.create_table(
         "users",
         sa.Column("username", sa.String(length=30), nullable=False),
-        sa.Column("password", sa.LargeBinary(), nullable=False),
-        sa.Column("email", sa.String(length=255), nullable=False),
-        sa.Column(
-            "user_role",
-            UserRoleType(),
-            server_default="user",
-            nullable=False,
-        ),
         sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("email", sa.String(length=320), nullable=False),
+        sa.Column("hashed_password", sa.String(length=1024), nullable=False),
+        sa.Column("is_active", sa.Boolean(), nullable=False),
+        sa.Column("is_superuser", sa.Boolean(), nullable=False),
+        sa.Column("is_verified", sa.Boolean(), nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_users")),
-        sa.UniqueConstraint("email", name=op.f("uq_users_email")),
         sa.UniqueConstraint("username", name=op.f("uq_users_username")),
     )
+    op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
     op.create_table(
         "black",
         sa.Column("user_id", sa.Integer(), nullable=False),
@@ -162,5 +159,6 @@ def downgrade() -> None:
     op.drop_table("friends")
     op.drop_table("followers")
     op.drop_table("black")
+    op.drop_index(op.f("ix_users_email"), table_name="users")
     op.drop_table("users")
     op.drop_table("tags")

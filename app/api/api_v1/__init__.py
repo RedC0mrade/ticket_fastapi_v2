@@ -10,9 +10,27 @@ from .blacklist import router as blacklist_router
 from .ticket_tag_association import router as association_router
 from .test import router as test_router
 from app.authentication.views import router as auth_router
+from app.core.auth.manage import fastapi_users
+from app.core.auth.backend import auth_backend
 
 router = APIRouter(prefix=settings.api.v1.prefix)
 
+router.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["auth"],
+)
+
+router.include_router(
+    fastapi_users.get_register_router(),
+    prefix="/auth",
+    tags=["auth"],
+)
+router.include_router(
+    fastapi_users.get_users_router(),
+    prefix="/users",
+    tags=["users"],
+)
 router.include_router(
     test_router,
     prefix=settings.api.v1.test,
