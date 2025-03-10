@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from fastapi_users.db import SQLAlchemyBaseUserTable
@@ -6,6 +7,8 @@ from .base_model import Base
 
 
 if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
     from app.core.models.profile import ProfileAlchemyModel
     from app.core.models.ticket import TicketAlchemyModel
     from app.core.models.friend import FriendAlchemyModel
@@ -17,11 +20,6 @@ class UserAlchemyModel(Base, SQLAlchemyBaseUserTable[int]):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(String(30), unique=True)
-    # password: Mapped[str] = mapped_column(String(255), nullable=False)
-    # email: Mapped[str] = mapped_column(String(255), unique=True)
-    # is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    # is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
-    # is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
 
     profile: Mapped["ProfileAlchemyModel"] = relationship(
         back_populates="user",
@@ -61,6 +59,10 @@ class UserAlchemyModel(Base, SQLAlchemyBaseUserTable[int]):
         back_populates="acceptor",
         cascade="all, delete-orphan",
     )
+
+    @classmethod
+    def get_db(cls, session: "AsyncSession"):
+        return SQLAlchemyUserDatabase(session, cls)
 
     def __repr__(self) -> str:
         return f"UserAlchemyModel(id={self.id!r}, username={self.username!r})"

@@ -22,7 +22,7 @@ class ApiV1Prefix(BaseModel):
     relationship: str = "/relationship"
     messages: str = "/messages"
     blacklist: str = "/blacklist"
-    auth: str = "/auth"
+    bearer_token_url: str = "/auth/jwt/loggin"
     test: str = "/test"
 
 
@@ -60,16 +60,16 @@ class Settings(BaseSettings):
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
 
-    private_key: Path = (
-        BASE_DIR / "app" / "authentication" / "certs" / "jwt-private.pem"
-    )
-    public_key: Path = (
-        BASE_DIR / "app" / "authentication" / "certs" / "jwt-public.pem"
-    )
+    # private_key: Path = (
+    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-private.pem"
+    # )
+    # public_key: Path = (
+    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-public.pem"
+    # )
 
-    algorithm: str = "RS256"
-    access_token_expire_minute: int = 24 * 60
-    access_token_refresh_days: int = 30
+    # algorithm: str = "RS256"
+    # access_token_expire_minute: int = 24 * 60
+    # access_token_refresh_days: int = 30
 
 
 settings = Settings()
