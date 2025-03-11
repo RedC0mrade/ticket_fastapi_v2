@@ -1,19 +1,23 @@
 from typing import TYPE_CHECKING
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+from fastapi_users_db_sqlalchemy import (
+    SQLAlchemyBaseUserTable,
+    SQLAlchemyUserDatabase,
+)
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from fastapi_users.db import SQLAlchemyBaseUserTable
 from .base_model import Base
 
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
+    from app.core.models.black_list_user import BlackListAlchemyModel
+    from app.core.models.follower import FollowerAlchemyModel
+    from app.core.models.friend import FriendAlchemyModel
     from app.core.models.profile import ProfileAlchemyModel
     from app.core.models.ticket import TicketAlchemyModel
-    from app.core.models.friend import FriendAlchemyModel
-    from app.core.models.follower import FollowerAlchemyModel
-    from app.core.models.black_list_user import BlackListAlchemyModel
+    
+    
 
 
 class UserAlchemyModel(Base, SQLAlchemyBaseUserTable[int]):
