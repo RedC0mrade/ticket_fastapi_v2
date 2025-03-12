@@ -22,7 +22,7 @@ class ApiV1Prefix(BaseModel):
     relationship: str = "/relationship"
     messages: str = "/messages"
     blacklist: str = "/blacklist"
-    bearer_token_url: str = "/auth/jwt/loggin"
+    auth: str = "/auth"
     test: str = "/test"
 
 
@@ -30,6 +30,12 @@ class ApiPrefix(BaseModel):
     prefix: str = "/api"
     ticket_prefix: str = "/ticket"
     v1: ApiV1Prefix = ApiV1Prefix()
+
+    @property
+    def bearer_token_url(self) -> str:
+        parts = (self.prefix, self.v1.prefix, self.v1.auth, "/login")
+        path = "".join(parts)
+        return path.removeprefix("/")
 
 
 class DatabaseConfig(BaseModel):
@@ -48,28 +54,27 @@ class DatabaseConfig(BaseModel):
     }
 
 
+class AuthentificationConfig(BaseModel):
+    lifetime_seconds: int = 3600
+    reset_password_token_secret: str = "default"
+    verification_token_secret: str = "default"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="FASTAPI__",
-        env_file=(".env", ".env_template"),
+        env_file=(
+            BASE_DIR / ".env.template",
+            BASE_DIR / ".env",
+        ),
     )
 
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
-
-    # private_key: Path = (
-    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-private.pem"
-    # )
-    # public_key: Path = (
-    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-public.pem"
-    # )
-
-    # algorithm: str = "RS256"
-    # access_token_expire_minute: int = 24 * 60
-    # access_token_refresh_days: int = 30
+    authentification_config: AuthentificationConfig = AuthentificationConfig()
 
 
 settings = Settings()
