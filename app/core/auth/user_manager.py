@@ -6,9 +6,9 @@ from fastapi_users import (
     IntegerIDMixin,
 )
 
-from core.config import settings
-from core.models import UserAlchemyModel
-from utils.webhooks.user import send_new_user_notification
+from app.core.config import settings
+from app.core.models import UserAlchemyModel
+from app.utils.webhooks.user import send_new_user_notification
 
 if TYPE_CHECKING:
     from fastapi import Request

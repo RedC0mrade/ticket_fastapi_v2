@@ -1,14 +1,16 @@
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr
 
-from app.core.models.user import UserRoleEnum
-
 
 class User(BaseModel):
     username: str
     password: str | bytes
     email: EmailStr
 
+class UserCreate(BaseModel):
+    username: str
+    password: str | bytes
+    email: EmailStr
 
 class UserPatch(BaseModel):
     username: Optional["str"] = None
@@ -23,6 +25,3 @@ class UserBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-
-class UserWithRole(UserBase):
-    user_role: UserRoleEnum
