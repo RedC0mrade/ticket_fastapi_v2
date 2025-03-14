@@ -1,3 +1,3 @@
-from app.core.config import settings
+from app.core.config import BASE_DIR
 
-print(settings.api.bearer_token_url)
+print(BASE_DIR)

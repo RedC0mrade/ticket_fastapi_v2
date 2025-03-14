@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 class MessageAlchemyModel(Base):
     __tablename__ = "messages"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
     message: Mapped[str] = mapped_column(String(250), nullable=True)
     ticket_id: Mapped[int] = mapped_column(ForeignKey("tickets.id"))
     ticket: Mapped["TicketAlchemyModel"] = relationship(

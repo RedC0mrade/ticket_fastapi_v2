@@ -17,7 +17,7 @@ class TicketAlchemyModel(Base):
             "acceptor_id", "executor_id", "ticket_name", name="unique_ticket"
         ),
     )
-
+    id: Mapped[int] = mapped_column(primary_key=True)
     ticket_name: Mapped[str] = mapped_column(String(100))
     messages: Mapped[list["MessageAlchemyModel"]] = relationship(
         "MessageAlchemyModel",

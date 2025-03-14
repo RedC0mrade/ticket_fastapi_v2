@@ -10,6 +10,7 @@ class BlackListAlchemyModel(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "black_id", name="black_list"),
     )
+    id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     black_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     black_user: Mapped["UserAlchemyModel"] = relationship(

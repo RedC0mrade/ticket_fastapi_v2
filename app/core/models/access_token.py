@@ -7,6 +7,7 @@ from fastapi_users_db_sqlalchemy.access_token import (
 from sqlalchemy import (
     Integer,
     ForeignKey,
+    MetaData,
 )
 from sqlalchemy.orm import (
     Mapped,
@@ -20,12 +21,14 @@ if TYPE_CHECKING:
 
 
 class AccessToken(Base, SQLAlchemyBaseAccessTokenTable[int]):
+    __tablename__ = "access_tokens"
+
     user_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="cascade"),
         nullable=False,
     )
-
+    
     @classmethod
     def get_db(cls, session: "AsyncSession"):
         return SQLAlchemyAccessTokenDatabase(session, cls)

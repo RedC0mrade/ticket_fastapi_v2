@@ -1,18 +1,19 @@
-"""fastapi users
+"""create table
 
-Revision ID: 213c1f7a778c
+Revision ID: 0ce6443b6248
 Revises: 
-Create Date: 2025-03-09 19:06:57.480318
+Create Date: 2025-03-14 18:12:29.782183
 
 """
 
 from typing import Sequence, Union
 
 from alembic import op
+import fastapi_users_db_sqlalchemy
 import sqlalchemy as sa
 
 
-revision: str = "213c1f7a778c"
+revision: str = "0ce6443b6248"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -21,17 +22,17 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "tags",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("tag_name", sa.String(length=30), nullable=False),
         sa.Column("tag_color", sa.String(length=7), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_tags")),
         sa.UniqueConstraint("tag_color", name=op.f("uq_tags_tag_color")),
         sa.UniqueConstraint("tag_name", name=op.f("uq_tags_tag_name")),
     )
     op.create_table(
         "users",
-        sa.Column("username", sa.String(length=30), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("username", sa.String(length=30), nullable=False),
         sa.Column("email", sa.String(length=320), nullable=False),
         sa.Column("hashed_password", sa.String(length=1024), nullable=False),
         sa.Column("is_active", sa.Boolean(), nullable=False),
@@ -42,10 +43,33 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
     op.create_table(
+        "access_tokens",
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column("token", sa.String(length=43), nullable=False),
+        sa.Column(
+            "created_at",
+            fastapi_users_db_sqlalchemy.generics.TIMESTAMPAware(timezone=True),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"],
+            ["users.id"],
+            name=op.f("fk_access_tokens_user_id_users"),
+            ondelete="cascade",
+        ),
+        sa.PrimaryKeyConstraint("token", name=op.f("pk_access_tokens")),
+    )
+    op.create_index(
+        op.f("ix_access_tokens_created_at"),
+        "access_tokens",
+        ["created_at"],
+        unique=False,
+    )
+    op.create_table(
         "black",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("black_id", sa.Integer(), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["black_id"], ["users.id"], name=op.f("fk_black_black_id_users")
         ),
@@ -57,9 +81,9 @@ def upgrade() -> None:
     )
     op.create_table(
         "followers",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("follower_id", sa.Integer(), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["follower_id"],
             ["users.id"],
@@ -73,9 +97,9 @@ def upgrade() -> None:
     )
     op.create_table(
         "friends",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("friend_id", sa.Integer(), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["friend_id"],
             ["users.id"],
@@ -89,11 +113,11 @@ def upgrade() -> None:
     )
     op.create_table(
         "profiles",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sa.String(length=30), nullable=False),
         sa.Column("lastname", sa.String(length=30), nullable=False),
         sa.Column("birthday", sa.Date(), nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["user_id"], ["users.id"], name=op.f("fk_profiles_user_id_users")
         ),
@@ -101,11 +125,11 @@ def upgrade() -> None:
     )
     op.create_table(
         "tickets",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("ticket_name", sa.String(length=100), nullable=False),
         sa.Column("amount", sa.Integer(), nullable=False),
         sa.Column("executor_id", sa.Integer(), nullable=False),
         sa.Column("acceptor_id", sa.Integer(), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["acceptor_id"],
             ["users.id"],
@@ -123,9 +147,9 @@ def upgrade() -> None:
     )
     op.create_table(
         "messages",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("message", sa.String(length=250), nullable=True),
         sa.Column("ticket_id", sa.Integer(), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["ticket_id"],
             ["tickets.id"],
@@ -135,9 +159,9 @@ def upgrade() -> None:
     )
     op.create_table(
         "ticket_tag",
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("ticket_id", sa.Integer(), nullable=False),
         sa.Column("tag_id", sa.Integer(), nullable=False),
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["tag_id"], ["tags.id"], name=op.f("fk_ticket_tag_tag_id_tags")
         ),
@@ -159,6 +183,10 @@ def downgrade() -> None:
     op.drop_table("friends")
     op.drop_table("followers")
     op.drop_table("black")
+    op.drop_index(
+        op.f("ix_access_tokens_created_at"), table_name="access_tokens"
+    )
+    op.drop_table("access_tokens")
     op.drop_index(op.f("ix_users_email"), table_name="users")
     op.drop_table("users")
     op.drop_table("tags")

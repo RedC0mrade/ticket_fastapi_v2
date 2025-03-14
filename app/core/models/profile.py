@@ -9,6 +9,7 @@ from app.core.models.user import UserAlchemyModel
 class ProfileAlchemyModel(Base):
     __tablename__ = "profiles"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     lastname: Mapped[str] = mapped_column(String(30))
     birthday: Mapped[date] = mapped_column(Date)

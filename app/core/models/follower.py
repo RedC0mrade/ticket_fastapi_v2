@@ -10,6 +10,7 @@ class FollowerAlchemyModel(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "follower_id", name="unique_follower"),
     )
+    id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     follower_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     follower: Mapped["UserAlchemyModel"] = relationship(

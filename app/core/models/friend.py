@@ -10,6 +10,7 @@ class FriendAlchemyModel(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "friend_id", name="unique_friend"),
     )
+    id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     friend_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     friend: Mapped["UserAlchemyModel"] = relationship(

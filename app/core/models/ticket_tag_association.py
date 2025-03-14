@@ -8,7 +8,7 @@ class TicketTagAssociationAlchemyModel(Base):
     __table_args__ = (
         UniqueConstraint("ticket_id", "tag_id", name="unique_tag_ticket"),
     )
-
+    id: Mapped[int] = mapped_column(primary_key=True)
     ticket_id: Mapped[int] = mapped_column(ForeignKey("tickets.id"))
     tag_id: Mapped[int] = mapped_column(ForeignKey("tags.id"))
 
