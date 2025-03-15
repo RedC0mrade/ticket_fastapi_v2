@@ -1,8 +1,8 @@
-"""create table
+"""Create table
 
-Revision ID: 0ce6443b6248
+Revision ID: 7589e6fd4989
 Revises: 
-Create Date: 2025-03-14 18:12:29.782183
+Create Date: 2025-03-15 19:33:25.865300
 
 """
 
@@ -13,7 +13,7 @@ import fastapi_users_db_sqlalchemy
 import sqlalchemy as sa
 
 
-revision: str = "0ce6443b6248"
+revision: str = "7589e6fd4989"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

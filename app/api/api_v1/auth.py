@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from app.api.api_v1.fastapi_users_routers import fastapi_users
 from app.api.dependencies.authentication import authentication_backend
-from app.core.config import settings
 from app.core.auth.schemas import (
     UserRead,
     UserCreate,
