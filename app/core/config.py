@@ -87,4 +87,6 @@ class Settings(BaseSettings):
     algorithm: str = "RS256"
     access_token_expire_minute: int = 24 * 60
     access_token_refresh_days: int = 30
+
+
 settings = Settings()
