@@ -2,9 +2,9 @@ from typing import List
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth.schemas import UserRead
 from app.core.models.follower import FollowerAlchemyModel
 from app.core.models.friend import FriendAlchemyModel
-from app.core.schemas.user import UserBase
 from app.validators.blacklist import BlacklistValidation
 
 from app.validators.general import validate_actions_with_same_id
@@ -16,7 +16,7 @@ class RelationshipService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserBase,
+        user: UserRead,
         valid_blacklict: BlacklistValidation,
         valid_relationship: RelationshipValidation,
         valid_user: UserValidation,

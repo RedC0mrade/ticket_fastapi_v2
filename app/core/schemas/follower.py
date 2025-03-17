@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from app.core.schemas.user import UserBase
+from app.core.auth.schemas import UserRead
 
 
 class FollowerSchema(BaseModel):
@@ -11,8 +11,8 @@ class FollowerSchema(BaseModel):
 
 
 class GetFollower(FollowerSchema):
-    follower: UserBase
+    follower: UserRead
 
 
 class GetFan(FollowerSchema):
-    fan: UserBase
+    fan: UserRead

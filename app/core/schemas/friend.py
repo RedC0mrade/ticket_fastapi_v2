@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.core.schemas.user import UserBase
+from app.core.auth.schemas import UserRead
 
 
 class FriendSchema(BaseModel):
@@ -9,4 +9,4 @@ class FriendSchema(BaseModel):
 
 
 class GetFriend(FriendSchema):
-    friend: UserBase
+    friend: UserRead

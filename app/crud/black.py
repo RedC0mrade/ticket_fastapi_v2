@@ -1,8 +1,8 @@
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth.schemas import UserRead
 from app.core.models.black_list_user import BlackListAlchemyModel
-from app.core.schemas.user import UserBase
 from app.validators.blacklist import BlacklistValidation
 from app.validators.general import validate_actions_with_same_id
 from app.validators.relationship import RelationshipValidation
@@ -11,7 +11,7 @@ from app.validators.relationship import RelationshipValidation
 class BlacklistServices:
     def __init__(
         self,
-        user: UserBase,
+        user: UserRead,
         session: AsyncSession,
         valid_blacklict: BlacklistValidation,
         valid_relationship: RelationshipValidation

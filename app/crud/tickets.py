@@ -4,7 +4,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
-from app.core.schemas.user import UserBase
+from app.core.auth.schemas import UserRead
 from app.core.models.ticket_tag_association import (
     TicketTagAssociationAlchemyModel,
 )
@@ -19,7 +19,7 @@ class TicketService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserBase,
+        user: UserRead,
         message_service: MessageService,
         valid_tag: TagValidation,
         valid_ticket: TicketValidation,

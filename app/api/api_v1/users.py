@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, Depends
 
-from app.api.api_v1.fastapi_users_routers import fastapi_users
+from app.api.dependencies.current_users_depends import fastapi_users
 from app.core.auth.schemas import UserRead, UserUpdate
 from app.crud.users import UserService
 from app.core.schemas.user import UserCreate, UserBase, UserPatch
@@ -17,14 +17,14 @@ router.include_router(
         UserUpdate,
     )
 )
-# @router.get(
-#     "/all_users",
-#     response_model=list[UserBase],
-# )
-# async def get_users(
-#     user_service: UserService = Depends(get_user_service),
-# ):
-#     return await user_service.get_users()
+@router.get(
+    "/all_users",
+    response_model=list[UserBase],
+)
+async def get_users(
+    user_service: UserService = Depends(get_user_service),
+):
+    return await user_service.get_users()
 
 
 # @router.get(

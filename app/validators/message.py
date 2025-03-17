@@ -4,9 +4,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.core.auth.schemas import UserRead
 from app.core.models.message import MessageAlchemyModel
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserBase
 
 
 class MessageValidate:
@@ -18,7 +18,7 @@ class MessageValidate:
     async def validate_message(
         self,
         message_id: int,
-        user: UserBase,
+        user: UserRead,
         session: AsyncSession,
     ) -> MessageAlchemyModel:
 

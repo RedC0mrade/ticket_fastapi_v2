@@ -2,9 +2,9 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth.schemas import UserRead
 from app.core.models.message import MessageAlchemyModel
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserBase
 from app.validators.message import MessageValidate
 from app.validators.ticket import TicketValidation
 
@@ -13,7 +13,7 @@ class MessageService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserBase,
+        user: UserRead,
         valid_message: MessageValidate,
         valid_ticket: TicketValidation,
     ):

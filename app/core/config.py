@@ -59,7 +59,6 @@ class AuthentificationConfig(BaseModel):
     reset_password_token_secret: str
     verification_token_secret: str
 
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         case_sensitive=False,
@@ -75,16 +74,20 @@ class Settings(BaseSettings):
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
     authentification_config: AuthentificationConfig
+    default_username: str
+    default_email: str
+    default_password: str
 
-    # DELETE
-    private_key: Path = (
-        BASE_DIR / "app" / "authentication" / "certs" / "jwt-private.pem"
-    )
-    public_key: Path = (
-        BASE_DIR / "app" / "authentication" / "certs" / "jwt-public.pem"
-    )
 
-    algorithm: str = "RS256"
-    access_token_expire_minute: int = 24 * 60
-    access_token_refresh_days: int = 30
+    # # DELETE
+    # private_key: Path = (
+    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-private.pem"
+    # )
+    # public_key: Path = (
+    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-public.pem"
+    # )
+
+    # algorithm: str = "RS256"
+    # access_token_expire_minute: int = 24 * 60
+    # access_token_refresh_days: int = 30
 settings = Settings()

@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from fastapi.security import HTTPBearer
 
 from app.core.config import settings
 from .auth import router as auth_router
@@ -12,8 +13,12 @@ from .ticket_tag_association import router as association_router
 from .relationship import router as relationship_router
 from .users import router as user_router
 
+http_bearer = HTTPBearer(auto_error=False)
 
-router = APIRouter(prefix=settings.api.v1.prefix)
+router = APIRouter(
+    prefix=settings.api.v1.prefix,
+    dependencies=[Depends(http_bearer)],
+)
 
 router.include_router(
     auth_router,

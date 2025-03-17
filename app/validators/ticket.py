@@ -1,16 +1,15 @@
 from fastapi import HTTPException, status
-from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth.schemas import UserRead
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserBase
 
 
 class TicketValidation:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserBase,
+        user: UserRead,
     ):
         self.session = session
         self.user = user

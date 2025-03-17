@@ -1,6 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth.schemas import UserRead
 from app.crud.tags import TagService
 from app.factories.database import db_helper
 from app.factories.validation_depends.tag import get_tag_validation

@@ -3,11 +3,11 @@ from fastapi import HTTPException
 from sqlalchemy import delete, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth.schemas import UserRead
 from app.core.models.ticket_tag_association import (
     TicketTagAssociationAlchemyModel,
 )
 from app.core.models.ticket import TicketAlchemyModel
-from app.core.schemas.user import UserBase
 from app.validators.tag import TagValidation
 from app.validators.ticket import TicketValidation
 from app.validators.ticket_tag_association import AssociationValidation
@@ -17,7 +17,7 @@ class TicketTagAssociationService:
     def __init__(
         self,
         session: AsyncSession,
-        user: UserBase,
+        user: UserRead,
         valid_asssociation: AssociationValidation,
         valid_tag: TagValidation,
         valid_ticket: TicketValidation,

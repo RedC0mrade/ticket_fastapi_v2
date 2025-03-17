@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.core.schemas.user import UserBase
+from app.core.auth.schemas import UserRead
 
 
 class BlackUser(BaseModel):
@@ -9,4 +9,4 @@ class BlackUser(BaseModel):
 
 
 class BlacklistUser(BlackUser):
-    black_user: UserBase
+    black_user: UserRead
