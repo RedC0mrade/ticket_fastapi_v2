@@ -12,7 +12,7 @@ class UserCreate(schemas.BaseUserCreate):
 
 
 class UserUpdate(schemas.BaseUserUpdate):
-    username: Optional[str]
+    username: Optional[str] = None
 
 
 class UserRegisteredNotification(BaseModel):
