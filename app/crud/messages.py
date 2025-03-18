@@ -75,8 +75,8 @@ class MessageService:
 
         await self.valid_ticket.validate_ticket(
             ticket_id=ticket_id,
-            user=self.user,
-            session=self.session,
+            # user=self.user,
+            # session=self.session,
         )
 
         message = MessageAlchemyModel(

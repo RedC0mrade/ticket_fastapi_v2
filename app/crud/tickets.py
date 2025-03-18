@@ -89,7 +89,7 @@ class TicketService:
         if ticket_in.tags_id:
             await self.valid_tag.validate_tags_in_base(
                 tags=ticket_in.tags_id,
-                session=self.session,
+                # session=self.session,
             )
             associations = [
                 TicketTagAssociationAlchemyModel(
@@ -158,7 +158,7 @@ class TicketService:
         if ticket_in.tags_id:
             await self.valid_tag.validate_tags_in_base(
                 tags=ticket_in.tags_id,
-                session=self.session,
+                # session=self.session,
             )
             new_tags_ids = set(ticket_in.tags_id) - current_tags_ids
             new_tags = [

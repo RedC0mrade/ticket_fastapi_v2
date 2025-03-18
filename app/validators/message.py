@@ -12,13 +12,14 @@ from app.core.models.ticket import TicketAlchemyModel
 class MessageValidate:
     def __init__(
         self,
+        user: UserRead,
     ):
-        pass
+        self.user = user
 
     async def validate_message(
         self,
         message_id: int,
-        user: UserRead,
+        # user: UserRead,
         session: AsyncSession,
     ) -> MessageAlchemyModel:
 
@@ -46,10 +47,10 @@ class MessageValidate:
                 detail="Ticket not found",
             )
 
-        if message.ticket.executor_id != user.id:
+        if message.ticket.executor_id != self.user.id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with id {user.id} not executor",
+                detail=f"User with id {self.user.id} not executor",
             )
 
         return message

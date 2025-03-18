@@ -8,10 +8,10 @@ from app.validators.message import MessageValidate
 
 
 def get_message_validation(
-    session: AsyncSession = Depends(db_helper.session_getter),
+    # session: AsyncSession = Depends(db_helper.session_getter),
     user: UserRead = Depends(current_active_user),
 ):
     return MessageValidate(
-        session=session,
+        # session=session,
         user=user,
     )

@@ -1,8 +1,8 @@
-"""Create table
+"""create table
 
-Revision ID: 7589e6fd4989
+Revision ID: 45c70629e8f2
 Revises: 
-Create Date: 2025-03-15 19:33:25.865300
+Create Date: 2025-03-18 10:25:13.964785
 
 """
 
@@ -13,7 +13,7 @@ import fastapi_users_db_sqlalchemy
 import sqlalchemy as sa
 
 
-revision: str = "7589e6fd4989"
+revision: str = "45c70629e8f2"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -173,6 +173,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name=op.f("pk_ticket_tag")),
         sa.UniqueConstraint("ticket_id", "tag_id", name="unique_tag_ticket"),
     )
+    # ### end Alembic commands ###
 
 
 def downgrade() -> None:
