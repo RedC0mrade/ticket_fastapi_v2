@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, Response
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+from fastapi import APIRouter, Depends
+from app.core.config import settings
 
-from app.api.dependencies.authentication.users import get_users_db
 from app.api.dependencies.current_users_depends import fastapi_users
 from app.core.auth.schemas import UserRead, UserUpdate
 from app.crud.users import UserService
@@ -18,16 +17,16 @@ router.include_router(
     )
 )
 
+user_router = APIRouter(tags=["test"], prefix=settings.api.v1.test)
 
-@router.get(
+
+@user_router.get(
     "/all_users",
     response_model=list[UserRead],
 )
 async def get_users(
     user_service: UserService = Depends(get_user_service),
-    user=Depends(fastapi_users.current_user(optional=False)),
 ):
-    print(1111111111)
     return await user_service.get_users()
 
 

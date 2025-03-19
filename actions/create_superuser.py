@@ -14,7 +14,6 @@ from app.core.models import (
 )
 
 
-
 get_users_db_context = contextlib.asynccontextmanager(get_users_db)
 get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 
@@ -38,7 +37,7 @@ async def create_user(
 
 
 async def create_superuser(
-    username:str = default_username,
+    username: str = default_username,
     email: str = default_email,
     password: str = default_password,
     is_active: bool = default_is_active,
@@ -60,6 +59,7 @@ async def create_superuser(
                     user_manager=user_manager,
                     user_create=user_create,
                 )
+
 
 if __name__ == "__main__":
     try:

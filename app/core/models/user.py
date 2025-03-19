@@ -16,13 +16,11 @@ if TYPE_CHECKING:
     from app.core.models.friend import FriendAlchemyModel
     from app.core.models.profile import ProfileAlchemyModel
     from app.core.models.ticket import TicketAlchemyModel
-    
-    
 
 
 class UserAlchemyModel(Base, SQLAlchemyBaseUserTable[int]):
     __tablename__ = "users"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(30), unique=True)
 

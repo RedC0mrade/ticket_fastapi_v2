@@ -19,22 +19,14 @@ router = APIRouter(
     prefix=settings.api.v1.prefix,
     dependencies=[Depends(http_bearer)],
 )
-
 router.include_router(
     auth_router,
     prefix=settings.api.v1.auth,
 )
-
-# router.include_router(
-#     test_router,
-#     prefix=settings.api.v1.test,
-# )
-
 router.include_router(
     user_router,
     prefix=settings.api.v1.users,
 )
-
 router.include_router(
     blacklist_router,
     prefix=settings.api.v1.blacklist,
@@ -59,3 +51,7 @@ router.include_router(
     relationship_router,
     prefix=settings.api.v1.relationship,
 )
+# router.include_router(
+#     test_router,
+#     prefix=settings.api.v1.test,
+# )
