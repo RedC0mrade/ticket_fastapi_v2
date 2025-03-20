@@ -1,30 +1,34 @@
-# from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException
+from typing import List
 
-# from app.authentication.actions import cheak_permission
-# from app.core.models.user import UserRoleEnum
-# from app.core.schemas.user import UserBase, UserWithRole
-# from app.crud.users import UserService
-# from app.factories.user import get_user_service
+from sqlalchemy import and_, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-# router = APIRouter(tags=["test"])
-
-
-# def admin_user_id(
-#     user_text: str,
-#     user: UserWithRole = Depends(cheak_permission()),
-#     user_id: int | None = Query(
-#         None, description="ID пользователя (только для администраторов)"
-#     ),
-# ) -> int:
-#     """Функция зависимости: позволяет передавать user_id только администраторам"""
-#     if user.user_role == UserRoleEnum.ADMIN and user_id:
-#         return user_id
-#     return user.id
+from app.core.models.user import UserAlchemyModel
+from app.validators.user import UserValidation
+from app.core.models import db_helper
+from app.core.auth.schemas import UserRead
+from app.crud.users import UserService
+from app.factories.user import get_user_service
+from app.api.dependencies.current_users_depends import current_active_user
+router = APIRouter(tags=["test"])
 
 
-# @router.get("/me", response_model=UserBase)
-# async def get_me(
-#     target_user_id: int = Depends(admin_user_id),
-#     user_service: UserService = Depends(get_user_service),
-# ):
-#     return await user_service.get_user(user_id=target_user_id)
+@router.get(
+    "/all_users",
+    response_model=list[UserRead],
+)
+async def get_users(
+    session: AsyncSession = Depends(db_helper.session_getter),
+    user: UserRead = Depends(current_active_user)
+) -> List[UserAlchemyModel]:
+
+    stmt = select(UserAlchemyModel).where(
+        and_(
+            UserAlchemyModel.is_superuser.is_(False),
+            UserAlchemyModel.is_verified.is_(True),
+        )
+    )
+    result = await session.execute(stmt)
+    users = result.scalars().all()
+    return list(users)

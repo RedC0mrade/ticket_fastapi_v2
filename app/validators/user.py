@@ -26,5 +26,9 @@ class UserValidation:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"User with id {user_id} not found",
             )
-
+        if not valid_user.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User is not verified",
+            )
         return valid_user

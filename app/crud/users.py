@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.user import UserAlchemyModel
@@ -16,8 +16,14 @@ class UserService:
         self.session = session
         self.valid_user = valid_user
 
-    async def get_users(self) -> List[UserAlchemyModel]:
-        stmt = select(UserAlchemyModel)
+    async def get_users(self, ) -> List[UserAlchemyModel]:
+
+        stmt = select(UserAlchemyModel).where(
+            and_(
+                UserAlchemyModel.is_superuser.is_(False),
+                UserAlchemyModel.is_verified.is_(True),
+            )
+        )
         result = await self.session.execute(stmt)
         users = result.scalars().all()
         return list(users)

@@ -7,3 +7,10 @@
 # UPDATE users
 # SET user_role = 'super_user'
 # WHERE id = 1;
+# docker-compose up -d
+# python -m actions.create_superuser
+# INSERT INTO tags (tag_name, tag_color)
+# VALUES
+# ('black', '#000000'),
+# ('grey', '#999999'),
+# ('yellow', '#fff000');
