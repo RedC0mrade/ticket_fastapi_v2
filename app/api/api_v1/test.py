@@ -11,7 +11,8 @@ from app.core.auth.schemas import UserRead
 from app.crud.users import UserService
 from app.factories.user import get_user_service
 from app.api.dependencies.current_users_depends import current_active_user
-router = APIRouter(tags=["test"])
+
+router = APIRouter(tags=["Users"])
 
 
 @router.get(
@@ -32,3 +33,12 @@ async def get_users(
     result = await session.execute(stmt)
     users = result.scalars().all()
     return list(users)
+
+@router.delete("/self")
+
+async def delete_your_profile(
+    session: AsyncSession = Depends(db_helper.session_getter),
+    user: UserRead = Depends(current_active_user)
+):
+    await session.delete(user)
+    await session.commit()
