@@ -4,13 +4,14 @@ from fastapi.security import HTTPBearer
 from app.core.config import settings
 from .auth import router as auth_router
 from .blacklist import router as blacklist_router
+from .fastapi_users_api import router as fastapi_users_router
 from .messages import router as messages_router
 from .tags import router as tag_router
 from .tickets import router as tickets_router
 from .ticket_tag_association import router as association_router
 from .relationship import router as relationship_router
-from .users import router as users_router
-from .test import router as test_router
+
+from .users import router as user_router
 
 http_bearer = HTTPBearer(auto_error=False)
 
@@ -23,7 +24,7 @@ router.include_router(
     prefix=settings.api.v1.auth,
 )
 router.include_router(
-    users_router,
+    fastapi_users_router,
     prefix=settings.api.v1.users,
 )
 router.include_router(
@@ -51,6 +52,6 @@ router.include_router(
     prefix=settings.api.v1.relationship,
 )
 router.include_router(
-    test_router,
+    user_router,
     prefix=settings.api.v1.test,
 )

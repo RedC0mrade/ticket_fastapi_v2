@@ -16,7 +16,7 @@ class UserService:
         self.session = session
         self.valid_user = valid_user
 
-    async def get_users(self, ) -> List[UserAlchemyModel]:
+    async def get_users(self) -> List[UserAlchemyModel]:
 
         stmt = select(UserAlchemyModel).where(
             and_(

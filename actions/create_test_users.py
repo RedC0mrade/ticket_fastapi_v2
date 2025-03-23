@@ -13,20 +13,22 @@ async def create_test_users(
         UserAlchemyModel(
             username="first",
             email="first@first.com",
-            password="111",
+            hashed_password="111",
         ),
         UserAlchemyModel(
             username="second",
             email="second@second.com",
-            password="111",
+            hashed_password="111",
         ),
     ]
     session.add_all(stmt)
-    session.commit()
+    await session.commit()
+
 
 async def main():
     async with db_helper.session_factory() as session:
         await create_test_users(session=session)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
