@@ -36,8 +36,8 @@ async def create_user(
 
 
 async def create_users(
-    username: list = default_username,
-    email: list = default_email,
+    username: tuple = default_username,
+    email: tuple = default_email,
     password: str = default_password,
     is_active: bool = default_is_active,
     is_superuser: bool = default_is_superuser,
