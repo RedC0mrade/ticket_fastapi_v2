@@ -29,4 +29,4 @@ async def delete_tag(
     tag_service: TagService = Depends(get_tag_service),
     ):
 
-    return await tag_service.delete_tag(tagt_id=tag_id)
+    return await tag_service.delete_tag(tag_id=tag_id)

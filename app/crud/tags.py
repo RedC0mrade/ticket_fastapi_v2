@@ -14,10 +14,10 @@ class TagService:
     def __init__(
         self,
         session: AsyncSession,
-        valid_tag: TagValidation,
+        # valid_tag: TagValidation,
     ):
         self.session = session
-        self.valid_tag = valid_tag
+        # self.valid_tag = valid_tag
 
     async def get_all_tags(
         self,
@@ -50,7 +50,7 @@ class TagService:
         tag_id: int,
         _: UserRead = Depends(current_active_superuser),
     ) -> None:
-        tag: TagAlchemyModel = await self.valid_tag(
+        tag: TagAlchemyModel = await TagValidation.validate_tag(
             tag_id=tag_id,
             session=self.session,
         )

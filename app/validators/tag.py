@@ -6,18 +6,14 @@ from app.core.models.tag import TagAlchemyModel
 
 
 class TagValidation:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
 
     async def validate_tags_in_base(
         self,
         tags: list | set,
+        session: AsyncSession,
     ):
         stmt = select(TagAlchemyModel.id).where(TagAlchemyModel.id.in_(tags))
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         tags_in_base = result.scalars().all()
 
         mising_tags = [tag for tag in tags if tag not in tags_in_base]
@@ -30,8 +26,9 @@ class TagValidation:
     async def validate_tag(
         self,
         tag_id: int,
+        session: AsyncSession,
     ) -> TagAlchemyModel:
-        tag = await self.session.get(
+        tag = await session.get(
             TagAlchemyModel,
             tag_id,
         )
