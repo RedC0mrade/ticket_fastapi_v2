@@ -8,7 +8,6 @@ from app.core.models.tag import TagAlchemyModel
 class TagValidation:
 
     async def validate_tags_in_base(
-        self,
         tags: list | set,
         session: AsyncSession,
     ):
@@ -24,7 +23,6 @@ class TagValidation:
             )
 
     async def validate_tag(
-        self,
         tag_id: int,
         session: AsyncSession,
     ) -> TagAlchemyModel:
