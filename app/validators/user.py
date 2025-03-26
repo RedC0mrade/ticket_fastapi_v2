@@ -5,18 +5,13 @@ from app.core.models.user import UserAlchemyModel
 
 
 class UserValidation:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
-
+    @staticmethod
     async def validate_user(
-        self,
         user_id: int,
+        session: AsyncSession,
     ) -> UserAlchemyModel:
 
-        valid_user: UserAlchemyModel | None = await self.session.get(
+        valid_user: UserAlchemyModel | None = await session.get(
             UserAlchemyModel,
             user_id,
         )

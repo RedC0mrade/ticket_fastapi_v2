@@ -10,10 +10,10 @@ default_colors = {
     "Зелёный": "#00FF00",
     "Синий": "#0000FF",
     "Чёрный": "#000000",
-    "Белый": "FFFFFF",
+    "Белый": "#FFFFFF",
     "Жёлтый": "#FFFF00",
     "Голубой": "#00FFFF",
-    "Розовый": "FFC0CB",
+    "Розовый": "#FFC0CB",
     "Бирюзовый": "#40E0D0",
     "Оранжевый": "#FFA500",
     "Фиолетовый": "#800080",
@@ -35,7 +35,7 @@ async def create_tags(
     return tags
 
 async def create():
-    async with db_helper.session_factory as session:
+    async with db_helper.session_factory() as session:
         tags = await create_tags()
         session.add_all(tags)
         await session.commit()

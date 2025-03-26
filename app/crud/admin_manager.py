@@ -1,2 +1,0 @@
-class AdminManager:
-    pass

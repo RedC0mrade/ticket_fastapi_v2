@@ -18,15 +18,15 @@ class TicketTagAssociationService:
         self,
         session: AsyncSession,
         user: UserRead,
-        valid_asssociation: AssociationValidation,
-        valid_tag: TagValidation,
-        valid_ticket: TicketValidation,
+        # valid_asssociation: AssociationValidation,
+        # valid_tag: TagValidation,
+        # valid_ticket: TicketValidation,
     ):
         self.session = session
         self.user = user
-        self.valid_asssociation = valid_asssociation
-        self.valid_tag = valid_tag
-        self.valid_ticket = valid_ticket
+        # self.valid_asssociation = valid_asssociation
+        # self.valid_tag = valid_tag
+        # self.valid_ticket = valid_ticket
 
     async def create_associations(
         self,
@@ -34,12 +34,12 @@ class TicketTagAssociationService:
         ticket_id: int,
     ) -> List[TicketTagAssociationAlchemyModel]:
 
-        ticket: TicketAlchemyModel = await self.valid_ticket.validate_ticket(
+        ticket: TicketAlchemyModel = await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
             session=self.session,
         )
-        await self.valid_tag.validate_tags_in_base(
+        await TagValidation.validate_tags_in_base(
             tags=tags_ids,
             session=self.session,
         )
@@ -63,7 +63,7 @@ class TicketTagAssociationService:
         association_id: int,
     ) -> None:
         association: TicketTagAssociationAlchemyModel = (
-            await self.valid_asssociation.validate_assosiation(
+            await AssociationValidation.validate_assosiation(
                 assosiation_id=association_id,
                 session=self.session,
             )

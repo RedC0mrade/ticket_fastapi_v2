@@ -14,20 +14,18 @@ class MessageService:
         self,
         session: AsyncSession,
         user: UserRead,
-        valid_message: MessageValidate,
-        valid_ticket: TicketValidation,
+
     ):
         self.session = session
         self.user = user
-        self.valid_message = valid_message
-        self.valid_ticket = valid_ticket
+
 
     async def get_messages(
         self,
         ticket_id: int,
     ) -> List[MessageAlchemyModel]:
 
-        ticket: TicketAlchemyModel = await self.valid_ticket.validate_ticket(
+        ticket: TicketAlchemyModel = await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
             session=self.session,
@@ -40,7 +38,7 @@ class MessageService:
         message_id: int,
     ) -> None:
 
-        message = await self.valid_message(
+        message = await MessageValidate.validate_message(
             message_id=message_id,
             user=self.user,
             session=self.session,
@@ -54,7 +52,7 @@ class MessageService:
         ticket_id: int,
     ) -> TicketAlchemyModel:
 
-        ticket: TicketAlchemyModel = await self.valid_ticket.validate_ticket(
+        ticket: TicketAlchemyModel = await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
             session=self.session,
         )
@@ -73,10 +71,10 @@ class MessageService:
         message: str,
     ) -> MessageAlchemyModel:
 
-        await self.valid_ticket.validate_ticket(
+        await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
-            # user=self.user,
-            # session=self.session,
+            user=self.user,
+            session=self.session,
         )
 
         message = MessageAlchemyModel(
@@ -93,7 +91,7 @@ class MessageService:
         message_text: str,
     ):
 
-        message: MessageAlchemyModel = await self.valid_message(
+        message: MessageAlchemyModel = await MessageValidate.validate_message(
             message_id=message_id,
             user=self.user,
             session=self.session,

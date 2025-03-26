@@ -6,7 +6,8 @@ from app.core.models.tag import TagAlchemyModel
 
 
 class TagValidation:
-
+    
+    @staticmethod
     async def validate_tags_in_base(
         tags: list | set,
         session: AsyncSession,
@@ -22,6 +23,7 @@ class TagValidation:
                 detail=f"Wrong tag id: {", ".join(map(str, mising_tags))}",
             )
 
+    @staticmethod
     async def validate_tag(
         tag_id: int,
         session: AsyncSession,

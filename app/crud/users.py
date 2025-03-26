@@ -4,17 +4,14 @@ from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models.user import UserAlchemyModel
-from app.validators.user import UserValidation
 
 
 class UserService:
     def __init__(
         self,
         session: AsyncSession,
-        valid_user: UserValidation,
     ):
         self.session = session
-        self.valid_user = valid_user
 
     async def get_users(self) -> List[UserAlchemyModel]:
 

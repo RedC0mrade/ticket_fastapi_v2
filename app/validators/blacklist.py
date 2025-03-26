@@ -6,16 +6,11 @@ from app.core.models.black_list_user import BlackListAlchemyModel
 
 
 class BlacklistValidation:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
 
     async def validate_user_not_in_blacklist(
-        self,
         black_id: int,
         user_id: int,
+        session: AsyncSession,
     ) -> BlackListAlchemyModel:
 
         stmt = select(BlackListAlchemyModel).where(
@@ -23,7 +18,7 @@ class BlacklistValidation:
             BlackListAlchemyModel.black_id == user_id,
         )
 
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         blacklist_user = result.scalar_one_or_none()
         if blacklist_user:
             raise HTTPException(
@@ -32,9 +27,9 @@ class BlacklistValidation:
             )
 
     async def validate_user_in_blacklist(
-        self,
         black_id: int,
         user_id: int,
+        session: AsyncSession,
     ) -> BlackListAlchemyModel:
 
         stmt = select(BlackListAlchemyModel).where(
@@ -42,7 +37,7 @@ class BlacklistValidation:
             BlackListAlchemyModel.black_id == user_id,
         )
 
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         blacklist_user = result.scalar_one_or_none()
         if not blacklist_user:
             raise HTTPException(
