@@ -7,15 +7,11 @@ from app.core.models.friend import FriendAlchemyModel
 
 
 class RelationshipValidation:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
 
+    @staticmethod
     async def validate_follow(
-        self,
         follower_id: int,
+        session: AsyncSession,
         user_id: int,
     ) -> FollowerAlchemyModel:
 
@@ -25,7 +21,7 @@ class RelationshipValidation:
                 FollowerAlchemyModel.user_id == user_id,
             )
         )
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         follow: FollowerAlchemyModel = result.scalar_one_or_none()
 
         if follow:
@@ -36,17 +32,17 @@ class RelationshipValidation:
                     f"already have follower with id = {follower_id}"
                 ),
             )
-
+    @staticmethod
     async def validate_follow_fan_to_delete(
-        self,
         follower_id: int,
+        session: AsyncSession,
         user_id: int,
     ):
         stmt = select(FollowerAlchemyModel).where(
             FollowerAlchemyModel.user_id == user_id,
             FollowerAlchemyModel.follower_id == follower_id,
         )
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         follow_fan = result.scalar_one_or_none()
 
         if not follow_fan:
@@ -58,25 +54,27 @@ class RelationshipValidation:
                 ),
             )
         return follow_fan
-
+    
+    @staticmethod
     async def validate_follow_fan(
-        self,
         follower_id: int,
+        session: AsyncSession,
         user_id: int,
     ):
         stmt = select(FollowerAlchemyModel).where(
             FollowerAlchemyModel.user_id == user_id,
             FollowerAlchemyModel.follower_id == follower_id,
         )
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         follow_fan = result.scalar_one_or_none()
 
         if follow_fan:
             return follow_fan
-
+    
+    @staticmethod
     async def validate_friend(
-        self,
         friend_id: int,
+        session: AsyncSession,
         user_id: int,
     ) -> FriendAlchemyModel:
         stmt = select(FriendAlchemyModel).where(
@@ -85,7 +83,7 @@ class RelationshipValidation:
                 FriendAlchemyModel.user_id == user_id,
             )
         )
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         friend: FriendAlchemyModel = result.scalar_one_or_none()
 
         if not friend:
@@ -97,10 +95,11 @@ class RelationshipValidation:
                 ),
             )
         return friend
-
+    
+    @staticmethod
     async def validate_friendship(
-        self,
         friend_id: int,
+        session: AsyncSession,
         user_id: int,
         is_friend: bool = True,
     ):
@@ -116,7 +115,7 @@ class RelationshipValidation:
                 ),
             )
         )
-        result: Result = await self.session.execute(stmt)
+        result: Result = await session.execute(stmt)
         friends = result.scalars().all()
         if friends and is_friend:
             raise HTTPException(

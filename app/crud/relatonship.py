@@ -17,15 +17,15 @@ class RelationshipService:
         self,
         session: AsyncSession,
         user: UserRead,
-        valid_blacklict: BlacklistValidation,
-        valid_relationship: RelationshipValidation,
-        valid_user: UserValidation,
+        # valid_blacklict: BlacklistValidation,
+        # valid_relationship: RelationshipValidation,
+        # valid_user: UserValidation,
     ):
         self.session = session
         self.user = user
-        self.valid_blacklict = valid_blacklict
-        self.valid_relationship = valid_relationship
-        self.valid_user = valid_user
+        # self.valid_blacklict = valid_blacklict
+        # self.valid_relationship = valid_relationship
+        # self.valid_user = valid_user
 
     async def get_all_folowers(
         self,
@@ -57,10 +57,13 @@ class RelationshipService:
             second_user_id=follower_id,
         )
 
-        self.valid_user.validate_user(user_id=follower_id)
+        UserValidation.validate_user(
+            session=self.session,
+            user_id=follower_id,
+        )
 
         follow: FollowerAlchemyModel = (
-            await self.valid_relationship.validate_follow_fan_to_delete(
+            await RelationshipValidation.validate_follow_fan_to_delete(
                 follower_id=follower_id,
                 user_id=self.user.id,
                 session=self.session,
@@ -78,10 +81,13 @@ class RelationshipService:
             second_user_id=fan_id,
         )
 
-        self.valid_user.validate_user(user_id=fan_id)
+        UserValidation.validate_user(
+            session=self.session,
+            user_id=fan_id,
+        )
 
         fan: FollowerAlchemyModel = (
-            await self.valid_relationship.validate_follow_fan_to_delete(
+            await RelationshipValidation.validate_follow_fan_to_delete(
                 follower_id=self.user.id,
                 user_id=fan_id,
                 session=self.session,
@@ -100,25 +106,28 @@ class RelationshipService:
             second_user_id=follower_id,
         )
 
-        self.valid_user.validate_user(user_id=follower_id)
+        UserValidation.validate_user(
+            session=self.session,
+            user_id=follower_id,
+        )
 
-        await self.valid_blacklict.validate_user_not_in_blacklist(
+        await BlacklistValidation.validate_user_not_in_blacklist(
             black_id=follower_id,
             user_id=self.user.id,
             session=self.session,
         )
-        await self.valid_relationship.validate_follow(
+        await RelationshipValidation.validate_follow(
             follower_id=follower_id,
             user_id=self.user.id,
             session=self.session,
         )
-        await self.valid_relationship.validate_friendship(
+        await RelationshipValidation.validate_friendship(
             friend_id=follower_id,
             user_id=self.user.id,
             session=self.session,
         )
         fan: FollowerAlchemyModel = (
-            await self.valid_relationship.validate_follow_fan(
+            await RelationshipValidation.validate_follow_fan(
                 follower_id=self.user.id,
                 user_id=follower_id,
                 session=self.session,
@@ -177,8 +186,9 @@ class RelationshipService:
             user_id=self.user.id,
             second_user_id=friend_id,
         )
-        friends = await self.valid_relationship.validate_friendship(
+        friends = await RelationshipValidation.validate_friendship(
             friend_id=friend_id,
+            session=self.session,
             user_id=self.user.id,
             is_friend=False,
         )

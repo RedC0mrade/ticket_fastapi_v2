@@ -7,6 +7,7 @@ from app.core.models.black_list_user import BlackListAlchemyModel
 
 class BlacklistValidation:
 
+    @staticmethod
     async def validate_user_not_in_blacklist(
         black_id: int,
         user_id: int,
@@ -25,7 +26,8 @@ class BlacklistValidation:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"id = {user_id} in blacklist",
             )
-
+    
+    @staticmethod
     async def validate_user_in_blacklist(
         black_id: int,
         user_id: int,

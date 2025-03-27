@@ -40,8 +40,8 @@ class MessageService:
 
         message = await MessageValidate.validate_message(
             message_id=message_id,
-            user=self.user,
             session=self.session,
+            user=self.user,
         )
 
         await self.session.delete(message)

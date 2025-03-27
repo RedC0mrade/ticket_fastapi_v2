@@ -13,13 +13,13 @@ class BlacklistServices:
         self,
         user: UserRead,
         session: AsyncSession,
-        valid_blacklict: BlacklistValidation,
-        valid_relationship: RelationshipValidation
+        # valid_blacklict: BlacklistValidation,
+        # valid_relationship: RelationshipValidation
     ):
         self.user = user
         self.session = session
-        self.valid_blacklict = valid_blacklict
-        self.valid_relationship = valid_relationship
+        # self.valid_blacklict = valid_blacklict
+        # self.valid_relationship = valid_relationship
 
     async def get_all_blacklist_users(self) -> list[BlackListAlchemyModel]:
         stmt = select(BlackListAlchemyModel).where(
@@ -37,12 +37,12 @@ class BlacklistServices:
             user_id=self.user.id,
             second_user_id=black_id,
         )
-        await self.valid_blacklict.validate_user_not_in_blacklist(
+        await BlacklistValidation.validate_user_not_in_blacklist(
             user_id=self.user.id,
             black_id=black_id,
             session=self.session,
         )
-        follow = await self.valid_relationship.validate_follow_fan(
+        follow = await RelationshipValidation.validate_follow_fan(
             user_id=black_id,
             follower_id=self.user.id,
             session=self.session,
@@ -50,7 +50,7 @@ class BlacklistServices:
         if follow:
             await self.session.delete(follow)
 
-        friends = await self.valid_relationship.validate_no_friendship(
+        friends = await RelationshipValidation.validate_no_friendship(
             user_id=self.user.id,
             friend_id=black_id,
             session=self.session,
@@ -76,7 +76,7 @@ class BlacklistServices:
             user_id=self.user.id,
             second_user_id=black_id,
         )
-        blaclist_user = await self.valid_blacklict.validate_user_in_blacklist(
+        blaclist_user = await BlacklistValidation.validate_user_in_blacklist(
             user_id=self.user.id,
             black_id=black_id,
             session=self.session,
