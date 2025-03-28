@@ -45,7 +45,7 @@ async def create_follow(
         get_relationship_service
     ),
 ):
-    return relationship_service.create_follow_friendship(follower_id)
+    return await relationship_service.create_follow_friendship(follower_id)
 
 
 @router.delete(

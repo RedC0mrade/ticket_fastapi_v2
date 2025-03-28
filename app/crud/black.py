@@ -6,6 +6,7 @@ from app.core.models.black_list_user import BlackListAlchemyModel
 from app.validators.blacklist import BlacklistValidation
 from app.validators.general import validate_actions_with_same_id
 from app.validators.relationship import RelationshipValidation
+from app.validators.user import UserValidation
 
 
 class BlacklistServices:
@@ -13,13 +14,9 @@ class BlacklistServices:
         self,
         user: UserRead,
         session: AsyncSession,
-        # valid_blacklict: BlacklistValidation,
-        # valid_relationship: RelationshipValidation
     ):
         self.user = user
         self.session = session
-        # self.valid_blacklict = valid_blacklict
-        # self.valid_relationship = valid_relationship
 
     async def get_all_blacklist_users(self) -> list[BlackListAlchemyModel]:
         stmt = select(BlackListAlchemyModel).where(
@@ -37,6 +34,10 @@ class BlacklistServices:
             user_id=self.user.id,
             second_user_id=black_id,
         )
+        await UserValidation.validate_user(
+            user_id=black_id,
+            session=self.session,
+        )
         await BlacklistValidation.validate_user_not_in_blacklist(
             user_id=self.user.id,
             black_id=black_id,
@@ -50,10 +51,11 @@ class BlacklistServices:
         if follow:
             await self.session.delete(follow)
 
-        friends = await RelationshipValidation.validate_no_friendship(
+        friends = await RelationshipValidation.validate_friendship(
             user_id=self.user.id,
             friend_id=black_id,
             session=self.session,
+            is_friend=False,
         )
 
         if friends:

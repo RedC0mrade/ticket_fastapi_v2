@@ -55,9 +55,10 @@ class DatabaseConfig(BaseModel):
 
 
 class AuthentificationConfig(BaseModel):
-    lifetime_seconds: int = 3600
+    lifetime_seconds: int = 36000
     reset_password_token_secret: str
     verification_token_secret: str
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -79,15 +80,4 @@ class Settings(BaseSettings):
     default_password: str
 
 
-    # # DELETE
-    # private_key: Path = (
-    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-private.pem"
-    # )
-    # public_key: Path = (
-    #     BASE_DIR / "app" / "authentication" / "certs" / "jwt-public.pem"
-    # )
-
-    # algorithm: str = "RS256"
-    # access_token_expire_minute: int = 24 * 60
-    # access_token_refresh_days: int = 30
 settings = Settings()

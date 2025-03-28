@@ -17,15 +17,10 @@ class RelationshipService:
         self,
         session: AsyncSession,
         user: UserRead,
-        # valid_blacklict: BlacklistValidation,
-        # valid_relationship: RelationshipValidation,
-        # valid_user: UserValidation,
+
     ):
         self.session = session
         self.user = user
-        # self.valid_blacklict = valid_blacklict
-        # self.valid_relationship = valid_relationship
-        # self.valid_user = valid_user
 
     async def get_all_folowers(
         self,
@@ -106,7 +101,7 @@ class RelationshipService:
             second_user_id=follower_id,
         )
 
-        UserValidation.validate_user(
+        await UserValidation.validate_user(
             session=self.session,
             user_id=follower_id,
         )

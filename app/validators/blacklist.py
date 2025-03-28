@@ -15,8 +15,8 @@ class BlacklistValidation:
     ) -> BlackListAlchemyModel:
 
         stmt = select(BlackListAlchemyModel).where(
-            BlackListAlchemyModel.user_id == black_id,
-            BlackListAlchemyModel.black_id == user_id,
+            BlackListAlchemyModel.user_id == user_id,
+            BlackListAlchemyModel.black_id == black_id,
         )
 
         result: Result = await session.execute(stmt)
@@ -24,9 +24,9 @@ class BlacklistValidation:
         if blacklist_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"id = {user_id} in blacklist",
+                detail=f"id = {black_id} in blacklist",
             )
-    
+
     @staticmethod
     async def validate_user_in_blacklist(
         black_id: int,
@@ -35,8 +35,8 @@ class BlacklistValidation:
     ) -> BlackListAlchemyModel:
 
         stmt = select(BlackListAlchemyModel).where(
-            BlackListAlchemyModel.user_id == black_id,
-            BlackListAlchemyModel.black_id == user_id,
+            BlackListAlchemyModel.user_id == user_id,
+            BlackListAlchemyModel.black_id == black_id,
         )
 
         result: Result = await session.execute(stmt)
@@ -44,6 +44,6 @@ class BlacklistValidation:
         if not blacklist_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"id = {user_id} not in blacklist",
+                detail=f"id = {black_id} not in blacklist",
             )
         return blacklist_user

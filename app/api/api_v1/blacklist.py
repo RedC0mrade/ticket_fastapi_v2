@@ -31,8 +31,8 @@ async def remove_from_blacklist(
 
 @router.post(
     "/add_to_blacklist/{black_id}",
-    # response_model=BlackUser,
-    # status_code=201,
+    response_model=BlackUser,
+    status_code=201,
 )
 async def add_to_blacklist(
     black_id: int,

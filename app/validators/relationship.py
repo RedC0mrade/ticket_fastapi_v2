@@ -32,6 +32,7 @@ class RelationshipValidation:
                     f"already have follower with id = {follower_id}"
                 ),
             )
+
     @staticmethod
     async def validate_follow_fan_to_delete(
         follower_id: int,
@@ -54,7 +55,7 @@ class RelationshipValidation:
                 ),
             )
         return follow_fan
-    
+
     @staticmethod
     async def validate_follow_fan(
         follower_id: int,
@@ -70,7 +71,7 @@ class RelationshipValidation:
 
         if follow_fan:
             return follow_fan
-    
+
     @staticmethod
     async def validate_friend(
         friend_id: int,
@@ -95,7 +96,7 @@ class RelationshipValidation:
                 ),
             )
         return friend
-    
+
     @staticmethod
     async def validate_friendship(
         friend_id: int,
@@ -103,6 +104,7 @@ class RelationshipValidation:
         user_id: int,
         is_friend: bool = True,
     ):
+
         stmt = select(FriendAlchemyModel).where(
             or_(
                 and_(
@@ -125,7 +127,7 @@ class RelationshipValidation:
                     f"and {friend_id} already friends",
                 ),
             )
-        if not friends:
+        elif not friends and is_friend:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=(
@@ -133,6 +135,7 @@ class RelationshipValidation:
                     f"and {friend_id} not a friends",
                 ),
             )
+
         return friends
 
     # async def validate_no_friendship(

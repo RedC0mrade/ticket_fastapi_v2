@@ -1,9 +1,6 @@
-from fastapi import Depends
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.dependencies.current_users_depends import current_active_superuser
-from app.core.auth.schemas import UserRead
 from app.core.schemas.tag import CreateTag
 from app.core.models.tag import TagAlchemyModel
 
@@ -14,10 +11,8 @@ class TagService:
     def __init__(
         self,
         session: AsyncSession,
-        # valid_tag: TagValidation,
     ):
         self.session = session
-        # self.valid_tag = valid_tag
 
     async def get_all_tags(
         self,
@@ -27,11 +22,16 @@ class TagService:
         tags = result.scalars().all()
         return list(tags)
 
+    async def get_tag(self, tag_id: int) -> TagAlchemyModel:
+        tag = await TagValidation.validate_tag(
+            session=self.session,
+            tag_id=tag_id,
+        )
+        return tag
+
     async def create_tags(
         self,
         tags_in: list[CreateTag],
-        _: UserRead = Depends(current_active_superuser),
-
     ) -> list[TagAlchemyModel]:
         tags = [
             TagAlchemyModel(
@@ -40,7 +40,6 @@ class TagService:
             )
             for tag in tags_in
         ]
-
         self.session.add_all(tags)
         await self.session.commit()
         return tags
@@ -48,7 +47,6 @@ class TagService:
     async def delete_tag(
         self,
         tag_id: int,
-        _: UserRead = Depends(current_active_superuser),
     ) -> None:
         tag: TagAlchemyModel = await TagValidation.validate_tag(
             tag_id=tag_id,

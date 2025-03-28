@@ -6,7 +6,7 @@ from app.core.models.tag import TagAlchemyModel
 
 
 class TagValidation:
-    
+
     @staticmethod
     async def validate_tags_in_base(
         tags: list | set,
