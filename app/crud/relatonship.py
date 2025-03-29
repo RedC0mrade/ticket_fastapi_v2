@@ -191,7 +191,7 @@ class RelationshipService:
             await self.session.delete(friend)
         await self.session.commit()
 
-        await self.create_follow_friendship()
+        await self.create_follow_friendship(follower_id=friend_id)
 
         follow = FollowerAlchemyModel(
             follower_id=self.user.id,

@@ -14,7 +14,7 @@ class RelationshipValidation:
         session: AsyncSession,
         user_id: int,
     ) -> FollowerAlchemyModel:
-
+        """сheck if the user is already follow"""
         stmt = select(FollowerAlchemyModel).where(
             and_(
                 FollowerAlchemyModel.follower_id == follower_id,
@@ -128,41 +128,15 @@ class RelationshipValidation:
                 ),
             )
         elif not friends and is_friend:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=(
-                    f"Users with id's {user_id} ",
-                    f"and {friend_id} not a friends",
-                ),
-            )
+            # проверка в create_follow_friendship на есть ли подписка,
+            # перед созданием новой
+            # raise HTTPException(
+            #     status_code=status.HTTP_400_BAD_REQUEST,
+            #     detail=(
+            #         f"Users with id's {user_id} ",
+            #         f"and {friend_id} not a friends",
+            #     ),
+            # )
+            return None
 
         return friends
-
-    # async def validate_no_friendship(
-    #     self,
-    #     friend_id: int,
-    #     user_id: int,
-    # ) -> list[FriendAlchemyModel]:
-    #     stmt = select(FriendAlchemyModel).where(
-    #         or_(
-    #             and_(
-    #                 FriendAlchemyModel.friend_id == friend_id,
-    #                 FriendAlchemyModel.user_id == user_id,
-    #             ),
-    #             and_(
-    #                 FriendAlchemyModel.friend_id == user_id,
-    #                 FriendAlchemyModel.user_id == friend_id,
-    #             ),
-    #         )
-    #     )
-    #     result: Result = await self.session.execute(stmt)
-    #     friends = result.scalars().all()
-    #     if not friends:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_400_BAD_REQUEST,
-    #             detail=(
-    #                 f"Users with id's {user_id} ",
-    #                 f"and {friend_id} not a friends",
-    #             ),
-    #         )
-    #     return friends
