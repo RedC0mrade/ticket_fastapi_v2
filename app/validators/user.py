@@ -5,7 +5,7 @@ from app.core.models.user import UserAlchemyModel
 
 
 class UserValidation:
-    
+
     @staticmethod
     async def validate_user(
         user_id: int,

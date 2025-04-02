@@ -1,21 +1,24 @@
-# from fastapi import HTTPException
-# import pytest
-# from app.core.models.user import UserAlchemyModel, UserRoleEnum
-# from app.validators.user import UserValidation
+from fastapi import HTTPException
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.models.user import UserAlchemyModel
+from app.validators.user import UserValidation
 
 
-# @pytest.mark.order(1)
-# async def test_valid_user(
-#     first_user: UserAlchemyModel,
-#     user_validation: UserValidation,
-# ):
-#     user: UserAlchemyModel = await user_validation.validate_user(
-#         user_id=first_user.id
-#     )
-#     assert user.id == first_user.id
-#     assert user.username == "first_user"
-#     assert user.email == "first_user@mail.ru"
-#     assert user.user_role == UserRoleEnum.USER
+@pytest.mark.order(1)
+async def test_valid_user(
+    first_user: UserAlchemyModel,
+    session: AsyncSession,
+):
+    
+    user: UserAlchemyModel = await UserValidation.validate_user(
+        session=session,
+        user_id=first_user.id
+    )
+    assert user.id == first_user.id
+    assert user.username == "first_user"
+    assert user.email == "first_user@mail.ru"
 
 
 # @pytest.mark.order(2)
