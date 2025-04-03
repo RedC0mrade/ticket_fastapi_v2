@@ -55,4 +55,3 @@ class TestUserService:
         users = await self.user_service.get_users()
         assert len(users) == 1
         assert users[0].username == "second_user"
-        
