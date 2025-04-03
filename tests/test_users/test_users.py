@@ -38,23 +38,21 @@ class TestUserService:
         assert users[1].username == "second_user"
         assert users[1].email == "second_user@mail.ru"
 
-    # async def test_no_users_in_base(self, empty_db):
+    async def test_no_users_in_base(self, empty_db):
 
-    #     users = await self.user_service.get_users()
-    #     assert len(users) == 0
-    #     assert users == list()
+        users = await self.user_service.get_users()
+        assert len(users) == 0
+        assert users == list()
 
-    # async def test_get_user(self):
-
-    #     user: UserAlchemyModel = await self.user_service.get_user(1)
-    #     assert user.id == 1
-    #     assert user.username == "first_user"
-
-    # async def test_user_with_wrong_id(self):
-
-    #     with pytest.raises(HTTPException) as exc:
-    #         await self.user_service.get_user(999)
-    #     assert exc.value.status_code == 404
-    #     assert exc.value.detail == "User with id 999 not found"
-
-
+    async def test_delete_user(
+        self,
+        first_user,
+        second_user,
+    ):
+        users = await self.user_service.get_users()
+        assert len(users) == 2
+        await self.user_service.delete_user(first_user.id)
+        users = await self.user_service.get_users()
+        assert len(users) == 1
+        assert users[0].username == "second_user"
+        

@@ -33,18 +33,13 @@ async def empty_db(session: AsyncSession):
     await session.commit()
 
 
-# @pytest.fixture(scope="function")
-# def user_validation(session):
-#     return UserValidation(session)
-
-
 @pytest.fixture(scope="function")
 async def first_user(session: AsyncSession) -> UserRead:
 
     user = UserAlchemyModel(
         id=1,
         username="first_user",
-        hashed_password="123",
+        hashed_password="111",
         email="first_user@mail.ru",
         is_active=True,
         is_superuser=False,
@@ -59,12 +54,12 @@ async def first_user(session: AsyncSession) -> UserRead:
 
 
 @pytest.fixture(scope="function")
-async def second_user(session: AsyncSession):
+async def second_user(session: AsyncSession) -> UserRead:
 
     user = UserAlchemyModel(
         id=2,
         username="second_user",
-        hashed_password=b"password",
+        hashed_password="222",
         email="second_user@mail.ru",
         is_active=True,
         is_superuser=False,
@@ -77,7 +72,24 @@ async def second_user(session: AsyncSession):
     await session.refresh(user)
     return user
 
+@pytest.fixture(scope="function")
+async def super_user(session: AsyncSession) -> UserRead:
 
+    user = UserAlchemyModel(
+        id=3,
+        username="second_user",
+        hashed_password="333",
+        email="second_user@mail.ru",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
+
+    session.add(user)
+    await session.flush()
+    await session.commit()
+    await session.refresh(user)
+    return user
 # @pytest.fixture(scope="function")
 # async def first_user_current_auth(
 #     first_user: UserBase,
