@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class TagAlchemyModel(Base):
     __tablename__ = "tags"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     tag_name: Mapped[str] = mapped_column(String(30), unique=True)
     tag_color: Mapped[str] = mapped_column(String(7), unique=True)
