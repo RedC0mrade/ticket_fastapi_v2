@@ -13,7 +13,8 @@ async def test_valid_user(
 ):
 
     user: UserAlchemyModel = await UserValidation.validate_user(
-        session=session, user_id=first_user.id
+        session=session,
+        user_id=first_user.id,
     )
     assert user.id == first_user.id
     assert user.username == "first_user"
@@ -21,9 +22,10 @@ async def test_valid_user(
 
 
 @pytest.mark.order(2)
-async def test_not_valid_user(
-    session: AsyncSession
-):
+async def test_not_valid_user(session: AsyncSession):
     with pytest.raises(HTTPException) as excinfo:
-        await UserValidation.validate_user(session=session, user_id=999,)
+        await UserValidation.validate_user(
+            session=session,
+            user_id=999,
+        )
     assert excinfo.value.status_code == 404

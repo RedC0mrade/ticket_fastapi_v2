@@ -14,11 +14,9 @@ class MessageService:
         self,
         session: AsyncSession,
         user: UserRead,
-
     ):
         self.session = session
         self.user = user
-
 
     async def get_messages(
         self,

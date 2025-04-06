@@ -1,7 +1,10 @@
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.logger import get_logger
 from app.core.models.user import UserAlchemyModel
+
+logger = get_logger(__name__)
 
 
 class UserValidation:
@@ -11,13 +14,12 @@ class UserValidation:
         user_id: int,
         session: AsyncSession,
     ) -> UserAlchemyModel:
-
         valid_user: UserAlchemyModel | None = await session.get(
             UserAlchemyModel,
             user_id,
         )
-
         if not valid_user:
+            logger.error("Bad id %s", user_id)
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"User with id {user_id} not found",

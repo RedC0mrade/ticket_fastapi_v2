@@ -1,6 +1,5 @@
 __all__ = (
     "db_helper",
-    
     "AccessToken",
     "Base",
     "BlackListAlchemyModel",

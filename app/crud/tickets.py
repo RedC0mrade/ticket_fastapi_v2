@@ -21,14 +21,10 @@ class TicketService:
         session: AsyncSession,
         user: UserRead,
         message_service: MessageService,
-        # valid_tag: TagValidation,
-        # valid_ticket: TicketValidation,
     ):
         self.session = session
         self.user = user
         self.message_service = message_service
-        # self.valid_tag = valid_tag
-        # self.valid_ticket = valid_ticket
 
     async def get_my_tasks(self) -> List[TicketAlchemyModel]:
         stmt = select(TicketAlchemyModel).where(
@@ -156,7 +152,7 @@ class TicketService:
         current_tags_ids = set(result.scalars().all())
 
         if ticket_in.tags_id:
-            await self.valid_tag.validate_tags_in_base(
+            await TagValidation.validate_tags_in_base(
                 tags=ticket_in.tags_id,
                 session=self.session,
             )
