@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth.schemas import UserRead
+from app.core.models.ticket import TicketAlchemyModel
 from app.crud.messages import MessageService
 from app.crud.tickets import TicketService
 
@@ -17,6 +18,7 @@ class TestTicketService:
         session: AsyncSession,
         first_user: UserRead,
         second_user: UserRead,
+        first_user_ticket_to_second: TicketAlchemyModel,
     ):
         self.session = session
         self.first_user = first_user
@@ -31,5 +33,6 @@ class TestTicketService:
             message_service=self.message_service,
         )
 
-    async def tast_get_my_tasks(self):
-        await
+    async def test_get_my_tasks(self):
+        tickets = await self.ticket_service.get_my_tasks()
+        assert len(tickets) == 1
