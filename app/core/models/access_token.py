@@ -28,7 +28,7 @@ class AccessToken(Base, SQLAlchemyBaseAccessTokenTable[int]):
         ForeignKey("users.id", ondelete="cascade"),
         nullable=False,
     )
-    
+
     @classmethod
     def get_db(cls, session: "AsyncSession"):
         return SQLAlchemyAccessTokenDatabase(session, cls)

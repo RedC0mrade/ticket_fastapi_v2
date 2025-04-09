@@ -12,12 +12,3 @@ router.include_router(
         UserUpdate,
     )
 )
-
-# @user_router.get(
-#     "/all_users",
-#     response_model=list[UserRead],
-# )
-# async def get_users(
-#     user_service: UserService = Depends(get_user_service),
-# ):
-#     return await user_service.get_users()

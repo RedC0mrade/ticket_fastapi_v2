@@ -24,6 +24,6 @@ async def get_users(
 @router.delete("/self")
 async def delete_your_profile(
     user_service: UserService = Depends(get_user_service),
-    user: UserRead = Depends(current_active_user)
+    user: UserRead = Depends(current_active_user),
 ):
     return await user_service.delete_user(user_id=user.id)
