@@ -36,3 +36,14 @@ class TestTicketService:
     async def test_get_my_tasks(self):
         tickets = await self.ticket_service.get_my_tasks()
         assert len(tickets) == 1
+        assert tickets[0].messages[0].message == "message #1"
+        assert tickets[0].acceptor_id == self.second_user.id
+        assert tickets[0].amount == 2
+        assert tickets[0].executor_id == self.first_user.id
+        assert len(tickets[0].tags) == 2
+        assert tickets[0].tags[0].tag_name == "White"
+        assert tickets[0].tags[0].tag_color == "#000000"
+        assert tickets[0].tags[1].tag_name == "Black"
+        assert tickets[0].tags[1].tag_color == "#000001"
+    
+    
