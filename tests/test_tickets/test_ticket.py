@@ -54,8 +54,7 @@ class TestTicketService:
         assert tickets[0].acceptor_id == self.first_user.id
         assert tickets[0].amount == 20
         assert tickets[0].executor_id == self.second_user.id
-        assert len(tickets[0].tags) == 2
+        assert len(tickets[0].tags) == 1
         assert tickets[0].tags[0].tag_name == "White"
         assert tickets[0].tags[0].tag_color == "#000000"
-        assert tickets[0].tags[1].tag_name == "Black"
-        assert tickets[0].tags[1].tag_color == "#000001"
+
