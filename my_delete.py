@@ -1,3 +1,4 @@
+# alembic init -t async alembic
 # alembic downgrade -1
 # alembic upgrade head
 # alembic revision --autogenerate -m "Create table"

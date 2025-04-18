@@ -3,8 +3,7 @@ import logging
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel
-from pydantic import PostgresDsn
+from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
