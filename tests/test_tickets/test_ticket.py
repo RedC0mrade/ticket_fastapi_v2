@@ -19,6 +19,7 @@ class TestTicketService:
         first_user: UserRead,
         second_user: UserRead,
         first_user_ticket_to_second: TicketAlchemyModel,
+        second_user_ticket_to_first: TicketAlchemyModel,
     ):
         self.session = session
         self.first_user = first_user
@@ -36,3 +37,24 @@ class TestTicketService:
     async def test_get_my_tasks(self):
         tickets = await self.ticket_service.get_my_tasks()
         assert len(tickets) == 1
+        assert tickets[0].messages[0].message == "message #1"
+        assert tickets[0].acceptor_id == self.second_user.id
+        assert tickets[0].amount == 2
+        assert tickets[0].executor_id == self.first_user.id
+        assert len(tickets[0].tags) == 2
+        assert tickets[0].tags[0].tag_name == "White"
+        assert tickets[0].tags[0].tag_color == "#000000"
+        assert tickets[0].tags[1].tag_name == "Black"
+        assert tickets[0].tags[1].tag_color == "#000001"
+
+    async def test_get_my_tickets(self):
+        tickets = await self.ticket_service.get_my_tickets()
+        assert len(tickets) == 1
+        assert tickets[0].messages[0].message == "message #2"
+        assert tickets[0].acceptor_id == self.first_user.id
+        assert tickets[0].amount == 20
+        assert tickets[0].executor_id == self.second_user.id
+        assert len(tickets[0].tags) == 1
+        assert tickets[0].tags[0].tag_name == "White"
+        assert tickets[0].tags[0].tag_color == "#000000"
+
