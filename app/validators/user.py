@@ -8,7 +8,6 @@ logger = get_logger(__name__)
 
 
 class UserValidation:
-
     @staticmethod
     async def validate_user(
         user_id: int,

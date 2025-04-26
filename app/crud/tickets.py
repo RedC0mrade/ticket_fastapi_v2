@@ -105,7 +105,6 @@ class TicketService:
         self,
         ticket_id: int,
     ) -> TicketAlchemyModel | None:
-
         stmt = select(TicketAlchemyModel.amount).where(
             TicketAlchemyModel.id == ticket_id,
             TicketAlchemyModel.acceptor_id == self.user.id,
@@ -137,7 +136,6 @@ class TicketService:
         ticket: TicketAlchemyModel,
         ticket_in: CreateTicket,
     ) -> TicketAlchemyModel:
-
         self.message_service.add_message(
             message=ticket_in.message,
             ticket_id=ticket.id,

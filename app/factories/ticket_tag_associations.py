@@ -5,10 +5,10 @@ from app.api.dependencies.current_users_depends import current_active_user
 from app.core.auth.schemas import UserRead
 from app.crud.ticket_tag_association import TicketTagAssociationService
 from app.factories.database import db_helper
+
 # from app.factories.validation_depends.ticket_tag_association import (
 #     get_association_validation,
 # )
-from app.validators.ticket_tag_association import AssociationValidation
 
 
 def get_ticket_tags_association_service(

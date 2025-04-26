@@ -22,7 +22,6 @@ async def delete_ticket(
     ticket_id: int,
     ticket_service: TicketService = Depends(get_ticket_service),
 ):
-
     return await ticket_service.delete_ticket(ticket_id=ticket_id)
 
 
@@ -45,7 +44,6 @@ async def ticket_done(
     ticket_id: int,
     ticket_service: TicketService = Depends(get_ticket_service),
 ):
-
     return await ticket_service.ticker_done(ticket_id)
 
 
@@ -56,7 +54,6 @@ async def add_to_existing_tickets(
     message: str,
     ticket_service: TicketService = Depends(get_ticket_service),
 ):
-
     return await ticket_service.add_to_existing_tickets(
         ticket_id=ticket_id,
         amount=amount,

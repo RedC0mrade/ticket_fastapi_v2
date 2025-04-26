@@ -12,7 +12,6 @@ async def test_tag_validation(
     tag_white: TagAlchemyModel,
     session: AsyncSession,
 ):
-
     tag: TagAlchemyModel = await TagValidation.validate_tag(
         session=session,
         tag_id=tag_white.id,
@@ -42,9 +41,9 @@ async def test_no_valid_tags_in_base(
     session: AsyncSession,
 ):
     await TagValidation.validate_tags_in_base(
-            session=session,
-            tags=[1, 2],
-        )
+        session=session,
+        tags=[1, 2],
+    )
     with pytest.raises(HTTPException) as excinfo:
         await TagValidation.validate_tags_in_base(
             session=session,

@@ -27,7 +27,10 @@ class UserService:
         )
         result = await self.session.execute(stmt)
         users = result.scalars().all()
-        logger.info("Fetched %s users", len(users),)
+        logger.info(
+            "Fetched %s users",
+            len(users),
+        )
         return list(users)
 
     async def delete_user(

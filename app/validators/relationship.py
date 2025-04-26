@@ -7,7 +7,6 @@ from app.core.models.friend import FriendAlchemyModel
 
 
 class RelationshipValidation:
-
     @staticmethod
     async def validate_follow(
         follower_id: int,
@@ -91,8 +90,7 @@ class RelationshipValidation:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=(
-                    f"User with id = {user_id} "
-                    f"don't have friend with id = {friend_id}"
+                    f"User with id = {user_id} don't have friend with id = {friend_id}"
                 ),
             )
         return friend
@@ -104,7 +102,6 @@ class RelationshipValidation:
         user_id: int,
         is_friend: bool = True,
     ):
-
         stmt = select(FriendAlchemyModel).where(
             or_(
                 and_(

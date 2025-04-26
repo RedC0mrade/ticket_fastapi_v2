@@ -18,9 +18,7 @@ from app.core.schemas.tag import Tag
 @pytest.fixture(scope="function")
 async def session():
     engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=True)
-    async_session = sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -34,7 +32,6 @@ async def session():
 
 @pytest.fixture(scope="function")
 async def first_user(session: AsyncSession) -> UserRead:
-
     user = UserAlchemyModel(
         id=1,
         username="first_user",
@@ -54,7 +51,6 @@ async def first_user(session: AsyncSession) -> UserRead:
 
 @pytest.fixture(scope="function")
 async def second_user(session: AsyncSession) -> UserRead:
-
     user = UserAlchemyModel(
         id=2,
         username="second_user",
@@ -74,7 +70,6 @@ async def second_user(session: AsyncSession) -> UserRead:
 
 @pytest.fixture(scope="function")
 async def super_user(session: AsyncSession) -> UserRead:
-
     user = UserAlchemyModel(
         id=3,
         username="second_user",
@@ -101,7 +96,6 @@ async def empty_db(session: AsyncSession):
 
 @pytest.fixture(scope="function")
 async def tag_white(session: AsyncSession):
-
     tag = TagAlchemyModel(
         tag_name="White",
         tag_color="#000000",
@@ -115,7 +109,6 @@ async def tag_white(session: AsyncSession):
 
 @pytest.fixture(scope="function")
 async def tag_black(session: AsyncSession):
-
     tag = TagAlchemyModel(
         tag_name="Black",
         tag_color="#000001",
@@ -155,11 +148,9 @@ async def first_user_ticket_to_second(
     )
     session.add(message)
 
-    associations: TicketTagAssociationAlchemyModel = (
-        TicketTagAssociationAlchemyModel(
-            ticket_id=ticket.id,
-            tag_id=tag_white.id,
-        )
+    associations: TicketTagAssociationAlchemyModel = TicketTagAssociationAlchemyModel(
+        ticket_id=ticket.id,
+        tag_id=tag_white.id,
     )
     session.add(associations)
 
@@ -197,11 +188,9 @@ async def second_user_ticket_to_first(
     )
     session.add(message)
 
-    associations: TicketTagAssociationAlchemyModel = (
-        TicketTagAssociationAlchemyModel(
-            ticket_id=ticket.id,
-            tag_id=tag_white.id,
-        )
+    associations: TicketTagAssociationAlchemyModel = TicketTagAssociationAlchemyModel(
+        ticket_id=ticket.id,
+        tag_id=tag_white.id,
     )
     session.add(associations)
 

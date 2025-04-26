@@ -6,7 +6,6 @@ from app.core.config import settings
 
 
 class Base(DeclarativeBase):
-
     __abstract__ = True
 
     metadata = MetaData(

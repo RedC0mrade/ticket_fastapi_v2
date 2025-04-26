@@ -21,7 +21,6 @@ async def delete_association(
         get_ticket_tags_association_service,
     ),
 ):
-
     return ticket_tags_association_service.delete_association(
         association_id=association_id,
     )

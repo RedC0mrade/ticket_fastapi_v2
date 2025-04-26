@@ -27,7 +27,4 @@ class FollowerAlchemyModel(Base):
     )
 
     def __repr__(self) -> str:
-        return (
-            f"FollowerAlchemyModel(id={self.id!r}, "
-            f"follower_id={self.follower_id!r})"
-            )
+        return f"FollowerAlchemyModel(id={self.id!r}, follower_id={self.follower_id!r})"

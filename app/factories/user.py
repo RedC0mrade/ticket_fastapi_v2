@@ -3,8 +3,6 @@ from fastapi import Depends
 
 from app.crud.users import UserService
 from app.factories.database import db_helper
-# from app.factories.validation_depends.user import get_validation_user
-# from app.validators.user import UserValidation
 
 
 def get_user_service(

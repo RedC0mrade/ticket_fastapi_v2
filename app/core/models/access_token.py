@@ -7,7 +7,6 @@ from fastapi_users_db_sqlalchemy.access_token import (
 from sqlalchemy import (
     Integer,
     ForeignKey,
-    MetaData,
 )
 from sqlalchemy.orm import (
     Mapped,

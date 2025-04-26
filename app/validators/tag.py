@@ -6,7 +6,6 @@ from app.core.models.tag import TagAlchemyModel
 
 
 class TagValidation:
-
     @staticmethod
     async def validate_tags_in_base(
         tags: list | set,
@@ -20,7 +19,7 @@ class TagValidation:
         if mising_tags:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Wrong tag id: {", ".join(map(str, mising_tags))}",
+                detail=f"Wrong tag id: {', '.join(map(str, mising_tags))}",
             )
 
     @staticmethod

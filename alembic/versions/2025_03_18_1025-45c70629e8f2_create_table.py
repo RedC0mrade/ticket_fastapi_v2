@@ -1,7 +1,7 @@
 """create table
 
 Revision ID: 45c70629e8f2
-Revises: 
+Revises:
 Create Date: 2025-03-18 10:25:13.964785
 
 """
@@ -184,9 +184,7 @@ def downgrade() -> None:
     op.drop_table("friends")
     op.drop_table("followers")
     op.drop_table("black")
-    op.drop_index(
-        op.f("ix_access_tokens_created_at"), table_name="access_tokens"
-    )
+    op.drop_index(op.f("ix_access_tokens_created_at"), table_name="access_tokens")
     op.drop_table("access_tokens")
     op.drop_index(op.f("ix_users_email"), table_name="users")
     op.drop_table("users")

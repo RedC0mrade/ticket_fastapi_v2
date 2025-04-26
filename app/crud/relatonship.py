@@ -17,7 +17,6 @@ class RelationshipService:
         self,
         session: AsyncSession,
         user: UserRead,
-
     ):
         self.session = session
         self.user = user
@@ -46,7 +45,6 @@ class RelationshipService:
         self,
         follower_id: int,
     ):
-
         validate_actions_with_same_id(
             user_id=self.user.id,
             second_user_id=follower_id,
@@ -95,7 +93,6 @@ class RelationshipService:
         self,
         follower_id: int,
     ) -> FollowerAlchemyModel | FriendAlchemyModel:
-
         validate_actions_with_same_id(
             user_id=self.user.id,
             second_user_id=follower_id,
@@ -121,12 +118,10 @@ class RelationshipService:
             user_id=self.user.id,
             session=self.session,
         )
-        fan: FollowerAlchemyModel = (
-            await RelationshipValidation.validate_follow_fan(
-                follower_id=self.user.id,
-                user_id=follower_id,
-                session=self.session,
-            )
+        fan: FollowerAlchemyModel = await RelationshipValidation.validate_follow_fan(
+            follower_id=self.user.id,
+            user_id=follower_id,
+            session=self.session,
         )
 
         if fan:
@@ -160,7 +155,6 @@ class RelationshipService:
         self,
         friend_id: int,
     ) -> FriendAlchemyModel:
-
         friendship = FriendAlchemyModel(
             user_id=self.user.id,
             friend_id=friend_id,

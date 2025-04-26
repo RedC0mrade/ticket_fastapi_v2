@@ -8,7 +8,6 @@ from app.crud.tickets import TicketService
 
 
 class TestTicketService:
-
     @pytest.fixture(
         scope="function",
         autouse=True,
@@ -57,4 +56,3 @@ class TestTicketService:
         assert len(tickets[0].tags) == 1
         assert tickets[0].tags[0].tag_name == "White"
         assert tickets[0].tags[0].tag_color == "#000000"
-

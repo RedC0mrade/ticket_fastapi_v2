@@ -22,7 +22,6 @@ class MessageService:
         self,
         ticket_id: int,
     ) -> List[MessageAlchemyModel]:
-
         ticket: TicketAlchemyModel = await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
@@ -35,7 +34,6 @@ class MessageService:
         self,
         message_id: int,
     ) -> None:
-
         message = await MessageValidate.validate_message(
             message_id=message_id,
             session=self.session,
@@ -49,7 +47,6 @@ class MessageService:
         self,
         ticket_id: int,
     ) -> TicketAlchemyModel:
-
         ticket: TicketAlchemyModel = await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
             session=self.session,
@@ -68,7 +65,6 @@ class MessageService:
         ticket_id: int,
         message: str,
     ) -> MessageAlchemyModel:
-
         await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,
@@ -88,7 +84,6 @@ class MessageService:
         message_id: int,
         message_text: str,
     ):
-
         message: MessageAlchemyModel = await MessageValidate.validate_message(
             message_id=message_id,
             user=self.user,

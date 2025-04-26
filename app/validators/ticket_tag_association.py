@@ -7,12 +7,9 @@ from app.core.models.ticket_tag_association import (
 
 
 class AssociationValidation:
-
     @staticmethod
     async def validate_assosiation(
-        self,
-        assosiation_id: int,
-        session: AsyncSession
+        self, assosiation_id: int, session: AsyncSession
     ) -> TicketTagAssociationAlchemyModel:
         assosiation = await session.get(
             TicketTagAssociationAlchemyModel,

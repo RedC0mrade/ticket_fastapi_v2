@@ -14,7 +14,6 @@ async def get_messages_from_ticket(
     ticket_id: int,
     message_service: MessageService = Depends(get_messages_service),
 ):
-
     return await message_service.get_messages(ticket_id=ticket_id)
 
 
@@ -23,7 +22,6 @@ async def delete_message(
     message_id: int,
     message_service: MessageService = Depends(get_messages_service),
 ):
-
     return await message_service.delete_message(message_id=message_id)
 
 
@@ -32,7 +30,6 @@ async def delete_all_messages(
     ticket_id: int,
     message_service: MessageService = Depends(get_messages_service),
 ):
-
     return await message_service.delete_all_messages(ticket_id=ticket_id)
 
 
@@ -42,7 +39,6 @@ async def add_message(
     message: str,
     message_service: MessageService = Depends(get_messages_service),
 ):
-
     return await message_service.add_message(
         ticket_id=ticket_id,
         message=message,
@@ -58,7 +54,6 @@ async def update_message(
     message_text: str,
     message_service: MessageService = Depends(get_messages_service),
 ):
-
     return await message_service.update_message(
         message_id=message_id,
         message_text=message_text,

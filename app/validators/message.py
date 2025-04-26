@@ -10,14 +10,12 @@ from app.core.models.ticket import TicketAlchemyModel
 
 
 class MessageValidate:
-
     @staticmethod
     async def validate_message(
         message_id: int,
         user: UserRead,
         session: AsyncSession,
     ) -> MessageAlchemyModel:
-
         stmt = (
             select(MessageAlchemyModel)
             .where(MessageAlchemyModel.id == message_id)

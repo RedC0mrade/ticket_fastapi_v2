@@ -11,7 +11,6 @@ async def test_valid_user(
     first_user: UserAlchemyModel,
     session: AsyncSession,
 ):
-
     user: UserAlchemyModel = await UserValidation.validate_user(
         session=session,
         user_id=first_user.id,

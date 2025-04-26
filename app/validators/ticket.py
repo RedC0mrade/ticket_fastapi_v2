@@ -6,14 +6,12 @@ from app.core.models.ticket import TicketAlchemyModel
 
 
 class TicketValidation:
-
     @staticmethod
     async def validate_ticket(
         ticket_id: int,
         session: AsyncSession,
         user: UserRead,
     ) -> TicketAlchemyModel:
-
         ticket: TicketAlchemyModel = await session.get(
             TicketAlchemyModel,
             ticket_id,

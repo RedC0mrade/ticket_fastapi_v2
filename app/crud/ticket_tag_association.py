@@ -33,7 +33,6 @@ class TicketTagAssociationService:
         tags_ids: List[int],
         ticket_id: int,
     ) -> List[TicketTagAssociationAlchemyModel]:
-
         ticket: TicketAlchemyModel = await TicketValidation.validate_ticket(
             ticket_id=ticket_id,
             user=self.user,

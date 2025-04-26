@@ -6,7 +6,6 @@ from app.factories.user import UserService
 
 
 class TestUserService:
-
     @pytest.fixture(
         scope="function",
         autouse=True,

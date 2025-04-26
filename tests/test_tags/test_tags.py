@@ -8,7 +8,6 @@ from app.core.schemas.tag import CreateTag
 
 
 class TestTagsService:
-
     @pytest.fixture(
         scope="function",
         autouse=True,

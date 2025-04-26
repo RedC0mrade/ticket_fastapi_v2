@@ -15,9 +15,7 @@ router = APIRouter(tags=["relationship"])
     response_model=list[GetFollower],
 )
 async def get_all_folowers(
-    relationship_service: RelationshipService = Depends(
-        get_relationship_service
-    ),
+    relationship_service: RelationshipService = Depends(get_relationship_service),
 ):
     return await relationship_service.get_all_folowers()
 
@@ -27,9 +25,7 @@ async def get_all_folowers(
     response_model=list[GetFan],
 )
 async def get_all_fans(
-    relationship_service: RelationshipService = Depends(
-        get_relationship_service
-    ),
+    relationship_service: RelationshipService = Depends(get_relationship_service),
 ):
     return await relationship_service.get_all_fans()
 
@@ -41,9 +37,7 @@ async def get_all_fans(
 )
 async def create_follow(
     follower_id: int,
-    relationship_service: RelationshipService = Depends(
-        get_relationship_service
-    ),
+    relationship_service: RelationshipService = Depends(get_relationship_service),
 ):
     return await relationship_service.create_follow_friendship(follower_id)
 
@@ -54,9 +48,7 @@ async def create_follow(
 )
 async def delete_follow(
     follower_id: int,
-    relationship_service: RelationshipService = Depends(
-        get_relationship_service
-    ),
+    relationship_service: RelationshipService = Depends(get_relationship_service),
 ):
     return await relationship_service.delete_follow(follower_id=follower_id)
 
@@ -67,9 +59,7 @@ async def delete_follow(
 )
 async def delete_fan(
     fan_id: int,
-    relationship_service: RelationshipService = Depends(
-        get_relationship_service
-    ),
+    relationship_service: RelationshipService = Depends(get_relationship_service),
 ):
     return await relationship_service.delete_fan(fan_id=fan_id)
 
@@ -79,9 +69,7 @@ async def delete_fan(
     response_model=list[GetFriend],
 )
 async def get_all_friends(
-    relationship_service: RelationshipService = Depends(
-        get_relationship_service
-    ),
+    relationship_service: RelationshipService = Depends(get_relationship_service),
 ):
     return await relationship_service.get_all_friends()
 
@@ -92,8 +80,6 @@ async def get_all_friends(
 )
 async def delete_friendship(
     friend_id: int,
-    relationship_service: RelationshipService = Depends(
-        get_relationship_service
-    ),
+    relationship_service: RelationshipService = Depends(get_relationship_service),
 ):
     return await relationship_service.delete_friendship(friend_id=friend_id)

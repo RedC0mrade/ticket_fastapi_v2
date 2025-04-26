@@ -1,6 +1,5 @@
 import asyncio
 from typing import Dict
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models import db_helper
 from app.core.models.tag import TagAlchemyModel
@@ -34,11 +33,13 @@ async def create_tags(
 
     return tags
 
+
 async def create():
     async with db_helper.session_factory() as session:
         tags = await create_tags()
         session.add_all(tags)
         await session.commit()
+
 
 if __name__ == "__main__":
     asyncio.run(create())
