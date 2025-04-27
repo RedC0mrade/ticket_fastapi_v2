@@ -1,6 +1,5 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Request
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi.concurrency import asynccontextmanager
 
@@ -27,11 +26,14 @@ main_app.include_router(
 
 @main_app.get("/")
 async def users_list(
-    request: Request,
-    user_service: UserService = Depends(get_user_service)
+    request: Request, user_service: UserService = Depends(get_user_service)
 ):
     users = await user_service.get_users()
-    return templates.TemplateResponse(request=request, name="index.html", context={"users": users})
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"users": users},
+    )
 
 
 if __name__ == "__main__":
