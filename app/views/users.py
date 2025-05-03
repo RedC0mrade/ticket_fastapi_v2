@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, Form, Request, status
-from fastapi.responses import RedirectResponse
+import httpx
+from fastapi import APIRouter, Depends, Form, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.api.dependencies.authentication.user_manager import get_user_manager
 from app.crud.users import UserService
 from app.factories.user import get_user_service
 from app.utils.templates import templates
+from starlette.status import HTTP_303_SEE_OTHER
 
 router = APIRouter()
 
@@ -21,38 +23,41 @@ async def users_list(
         context={"users": users},
     )
 
-
-@router.get("/register", name="register_user")
-async def register_get(request: Request):
+@router.get("/register_form", response_class=HTMLResponse, name="register_user")
+async def register_form_page(request: Request):
     return templates.TemplateResponse("users/register.html", {"request": request})
 
-@router.post("/register", name="register_user")
-async def register_post(
+@router.post("/register_form", response_class=HTMLResponse)
+async def register_form_proxy(
     request: Request,
-    email: str = Form(...),
     username: str = Form(...),
+    email: str = Form(...),
     password: str = Form(...),
-    user_manager=Depends(get_user_manager),
 ):
-    try:
-        user = await user_manager.create(
-            {
-                "email": email,
-                "password": password,
-                "is_active": True,
-                "is_superuser": False,
-                "is_verified": False,
-                "username": username,
-            }
-        )
-        # Редирект на страницу входа или главную
-        return RedirectResponse(url="/auth/login", status_code=status.HTTP_302_FOUND)
-    except Exception as err:
+    # Формируем JSON-пакет для FastAPI Users
+    json_payload = {
+        "username": username,
+        "email": email,
+        "password": password,
+    }
+
+    async with httpx.AsyncClient(base_url=str(request.base_url)) as client:
+        response = await client.post("/api/ticket/v1/auth/register", json=json_payload)
+
+    if response.status_code == 201:
+        return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
+    else:
+        try:
+            error_detail = response.json().get("detail", "Ошибка регистрации")
+        except Exception:
+            error_detail = "Ошибка регистрации"
+
         return templates.TemplateResponse(
-            "users/register.html",
+            "register.html",
             {
                 "request": request,
-                "error": str(err),
+                "error": error_detail,
+                "username": username,
+                "email": email,
             },
-            status_code=400
         )
