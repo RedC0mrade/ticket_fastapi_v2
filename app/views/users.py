@@ -1,8 +1,9 @@
+import logging
+import re
 import httpx
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
-from app.api.dependencies.authentication.user_manager import get_user_manager
 from app.crud.users import UserService
 from app.factories.user import get_user_service
 from app.utils.templates import templates
@@ -10,6 +11,21 @@ from starlette.status import HTTP_303_SEE_OTHER
 
 router = APIRouter()
 
+class TokenInterceptor(logging.Handler):
+    def __init__(self):
+        super().__init__()
+        self.token = None
+
+    def emit(self, record):
+        msg = record.getMessage()
+        if "Verification token:" in msg:
+            match = re.search(r"Verification token: '(.+?)'", msg)
+            if match:
+                self.token = match.group(1)
+
+# Инициализация в старте приложения
+token_handler = TokenInterceptor()
+logging.getLogger().addHandler(token_handler)
 
 @router.get("/")
 async def users_list(
@@ -23,9 +39,13 @@ async def users_list(
         context={"users": users},
     )
 
+
 @router.get("/register_form", response_class=HTMLResponse, name="register_user")
 async def register_form_page(request: Request):
-    return templates.TemplateResponse("users/register.html", {"request": request})
+    return templates.TemplateResponse(
+        "users/register.html", {"request": request}
+    )
+
 
 @router.post("/register_form", response_class=HTMLResponse)
 async def register_form_proxy(
@@ -42,9 +62,23 @@ async def register_form_proxy(
     }
 
     async with httpx.AsyncClient(base_url=str(request.base_url)) as client:
-        response = await client.post("/api/ticket/v1/auth/register", json=json_payload)
+        response = await client.post(
+            "/api/ticket/v1/auth/register", json=json_payload
+        )
 
     if response.status_code == 201:
+        print(000000000000000000000000000000000000000000000000000000)
+        json_payload = {
+            "email": email,
+        }
+        print(22222222222222222222222222222222222222222222222222222222222)
+        async with httpx.AsyncClient(base_url=str(request.base_url)) as client:
+            response = await client.post(
+                "/api/ticket/v1/auth/request-verify-token", json=json_payload
+            )
+        token = token_handler.token
+        print("Token from logs:", token)
+        print(1111111111111111111111111111111111111111111111111111111111111111)
         return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
     else:
         try:
