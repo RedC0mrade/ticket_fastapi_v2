@@ -1,14 +1,18 @@
 <header>
     <nav>
         <ul>
-            {# <li><a href="{{ request.url_for('') }}">Что нужно сделать</a></li> #}
-            {# <li><a href="{{ request.url_for('') }}">Друзья</a></li> #}
-            {# <li><a href="{{ request.url_for('') }}">Черный список</a></li> #}
-            {# <li><a href="{{ request.url_for('') }}">Мои тикеты</a></li> #}
-            {# <li><a href="{{ request.url_for('') }}">Подписчики</a></li> #}
-            {# <li><a href="{{ request.url_for('') }}">Фолловеры</a></li> #}
-            <li><a href="{{ request.url_for('register_user') }}">Регистрация</a></li>
-            {# <li><a href="{{ request.url_for('') }}">Войти</a></li>  #}
+            {% if user %}
+                <li>Привет, {{ user.username }}</li>
+                {# <li><a href="{{ request.url_for('') }}">Что нужно сделать</a></li> #}
+                {# <li><a href="{{ request.url_for('') }}">Друзья</a></li> #}
+                {# <li><a href="{{ request.url_for('') }}">Черный список</a></li> #}
+                {# <li><a href="{{ request.url_for('') }}">Мои тикеты</a></li> #}
+                {# <li><a href="{{ request.url_for('') }}">Подписчики</a></li> #}
+                {# <li><a href="{{ request.url_for('') }}">Фолловеры</a></li> #}
+            {% else %}
+                <li><a href="{{ request.url_for('register_user') }}">Регистрация</a></li>
+                <li><a href="{{ request.url_for('login') }}">Войти</a></li>
+            {% endif %}
         </ul>
     </nav>
 </header>
