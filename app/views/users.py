@@ -10,7 +10,7 @@ from app.factories.user import get_user_service
 from app.utils.templates import templates
 from starlette.status import HTTP_303_SEE_OTHER
 from app.core.models.user import UserAlchemyModel
-from app.api.dependencies.current_users_depends import current_active_user
+from app.api.dependencies.current_users_depends import current_optional_user
 
 
 router = APIRouter()
@@ -36,7 +36,7 @@ logging.getLogger().addHandler(token_handler)
 @router.get("/")
 async def users_list(
     request: Request,
-    user: UserAlchemyModel = Depends(current_active_user),
+    user: UserAlchemyModel | None = Depends(current_optional_user),
     user_service: UserService = Depends(get_user_service),
 ):
     users = await user_service.get_users()

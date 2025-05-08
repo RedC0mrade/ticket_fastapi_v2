@@ -15,6 +15,5 @@ def get_ticket_tags_association_service(
 ) -> TicketTagAssociationService:
     return TicketTagAssociationService(
         session=session,
-        # valid_asssociation=valid_asssociation,
         user=user,
     )
