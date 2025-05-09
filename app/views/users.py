@@ -43,7 +43,7 @@ async def users_list(
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"users": users, "user":user},
+        context={"users": users, "user": user},
     )
 
 
@@ -77,11 +77,37 @@ async def login_form(
             "/api/ticket/v1/auth/login",
             data=json,
         )
-        if response.status_code == 200:
-            return RedirectResponse(
+        # if response.status_code == 200:
+        #     return RedirectResponse(
+        #         url="/",
+        #         status_code=HTTP_303_SEE_OTHER,
+        #     )
+        if response.status_code == 204:
+            # Token сохранен в cookie, можно перенаправлять
+            redirect = RedirectResponse(
                 url="/",
                 status_code=HTTP_303_SEE_OTHER,
             )
+            # Переносим Set-Cookie из ответа на клиент
+            for cookie in response.cookies.jar:
+                redirect.set_cookie(
+                    key=cookie.name,
+                    value=cookie.value,
+                    expires=cookie.expires,
+                    path=cookie.path,
+                    domain=cookie.domain,
+                    secure=cookie.secure,
+                    httponly=cookie.has_nonstandard_attr("HttpOnly"),
+                    samesite="Lax",
+                )
+            return redirect
+    
+    error = "Неверный email или пароль"
+    return templates.TemplateResponse(
+        "users/login.html",
+        {"request": request, "error": error, "email": email},
+        status_code=400,
+    )
 
 
 @router.get(
