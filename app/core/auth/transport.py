@@ -7,7 +7,9 @@ bearer_transport = BearerTransport(
 )
 
 cookie_transport = CookieTransport(
-    cookie_name="cafem_auth",
+    cookie_name="my_auth_cookie",
     cookie_max_age=settings.authentification_config.lifetime_seconds,
-    cookie_secure=False,  # True для HTTPS
+    cookie_secure=True,
+    cookie_httponly=True,
+    cookie_samesite="lax",
 )
