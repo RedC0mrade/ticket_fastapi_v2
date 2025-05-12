@@ -73,7 +73,7 @@ async def login_form(
     }
     async with httpx.AsyncClient(base_url=str(request.base_url)) as client:
         response = await client.post(
-            "/api/ticket/v1/auth/login",
+            "/api/ticket/v1/cookie/login",
             data=json,
             follow_redirects=False,
         )

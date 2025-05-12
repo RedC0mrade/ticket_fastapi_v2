@@ -99,4 +99,6 @@ class Settings(BaseSettings):
     default_password: str
 
 
+os.environ.pop("FASTAPI__DB__URL", None)
+print("DB_URL from environment:", os.environ.get("FASTAPI__DB__URL"))
 settings = Settings()
