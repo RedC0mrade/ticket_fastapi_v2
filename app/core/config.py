@@ -1,4 +1,5 @@
 import logging
+import os
 
 from pathlib import Path
 from typing import Literal
@@ -9,9 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent.parent
 
-LOG_DEFAULT_FORMAT = (
-    "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
-)
+LOG_DEFAULT_FORMAT = "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
 
 
 class LoggingConfig(BaseModel):
@@ -44,6 +43,7 @@ class ApiV1Prefix(BaseModel):
     messages: str = "/messages"
     blacklist: str = "/blacklist"
     auth: str = "/auth"
+    cookie: str = "/cookie"
     test: str = "/test"
 
 
@@ -86,10 +86,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="FASTAPI__",
-        env_file=(
-            BASE_DIR / ".env.template",
-            BASE_DIR / ".env",
-        ),
+        env_file=(BASE_DIR / ".env",),
     )
 
     run: RunConfig = RunConfig()

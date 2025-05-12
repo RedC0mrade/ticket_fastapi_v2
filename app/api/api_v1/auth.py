@@ -8,7 +8,7 @@ from app.core.auth.schemas import (
 )
 
 router = APIRouter(
-    tags=["Auth"],
+    tags=["auth"],
 )
 
 # /login

@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer
 
 from app.core.config import settings
 from .auth import router as auth_router
+from .auth_cookie import router as cookie_router
 from .blacklist import router as blacklist_router
 from .fastapi_users_api import router as fastapi_users_router
 from .messages import router as messages_router
@@ -18,6 +19,10 @@ http_bearer = HTTPBearer(auto_error=False)
 router = APIRouter(
     prefix=settings.api.v1.prefix,
     dependencies=[Depends(http_bearer)],
+)
+router.include_router(
+    cookie_router,
+    prefix=settings.api.v1.cookie,
 )
 router.include_router(
     auth_router,
