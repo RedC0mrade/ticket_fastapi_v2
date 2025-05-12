@@ -3,13 +3,13 @@ import os
 
 from pathlib import Path
 from typing import Literal
-
+from dotenv import load_dotenv
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 BASE_DIR = Path(__file__).parent.parent.parent
-
+# load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
 LOG_DEFAULT_FORMAT = "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
 
 
@@ -99,6 +99,6 @@ class Settings(BaseSettings):
     default_password: str
 
 
-os.environ.pop("FASTAPI__DB__URL", None)
-print("DB_URL from environment:", os.environ.get("FASTAPI__DB__URL"))
+# os.environ.pop("FASTAPI__DB__URL", None)
+# print("DB_URL from environment:", os.environ.get("FASTAPI__DB__URL"))
 settings = Settings()
