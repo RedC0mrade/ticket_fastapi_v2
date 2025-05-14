@@ -3,6 +3,7 @@
         <ul>
             {% if user %}
                 <li>Привет, {{ user.username }}</li>
+                <li><a href="{{ request.url_for('logout') }}">Выход</a></li>
                 {# <li><a href="{{ request.url_for('') }}">Что нужно сделать</a></li> #}
                 {# <li><a href="{{ request.url_for('') }}">Друзья</a></li> #}
                 {# <li><a href="{{ request.url_for('') }}">Черный список</a></li> #}

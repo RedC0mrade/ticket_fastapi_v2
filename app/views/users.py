@@ -32,6 +32,22 @@ token_handler = TokenInterceptor()
 logging.getLogger().addHandler(token_handler)
 
 
+@router.get(
+    "/logout",
+    response_class=HTMLResponse,
+    name="logout"
+)
+async def user_logout(request: Request):
+    async with httpx.AsyncClient(base_url=str(request.base_url)) as client:
+        response = await client.post(url="/api/ticket/v1/cookie/logout")
+        if response.status_code == 200:
+            rederict = RedirectResponse(
+                url="/",
+                status_code=HTTP_303_SEE_OTHER,
+            )
+            return rederict
+
+
 @router.get("/")
 async def users_list(
     request: Request,
@@ -77,32 +93,13 @@ async def login_form(
             data=json,
             follow_redirects=False,
         )
-        if response.status_code == 200:
-            # Token сохранен в cookie, можно перенаправлять
+        if response.status_code == 204:
             redirect = RedirectResponse(
                 url="/",
                 status_code=HTTP_303_SEE_OTHER,
             )
-            print(response.headers, 11111111111111111111111)
-            # Проксируем все заголовки Set-Cookie из API-ответа в клиентский ответ
             for set_cookie in response.headers.get_list("set-cookie"):
-                print(3333333333333333333333)
                 redirect.headers.append("set-cookie", set_cookie)
-                print(response.headers.get_list("set-cookie"), "!!!!!!!!!!!!!!!!!!!!!!!")
-
-            # # Переносим Set-Cookie из ответа на клиент
-            # for cookie in response.cookies.jar:
-            #     redirect.set_cookie(
-            #         key=cookie.name,
-            #         value=cookie.value,
-            #         expires=cookie.expires,
-            #         path=cookie.path,
-            #         domain=cookie.domain,
-            #         secure=cookie.secure,
-            #         httponly=cookie.has_nonstandard_attr("HttpOnly"),
-            #         samesite="Lax",
-            #     )
-            print(22222222222222222222222222222222)
             return redirect
 
     error = "Неверный email или пароль"

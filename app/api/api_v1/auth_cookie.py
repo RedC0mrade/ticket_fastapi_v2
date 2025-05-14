@@ -4,10 +4,7 @@ from app.api.dependencies.current_users_depends import fastapi_users_cookie
 from app.api.dependencies.authentication import (
     authentication_backend_cookie_transport,
 )
-from app.core.auth.schemas import (
-    UserRead,
-    UserCreate,
-)
+
 
 router = APIRouter(
     tags=["cookie"],
