@@ -2,7 +2,7 @@
     <nav>
         <ul>
             {% if user %}
-                <li>Привет, {{ user.username }}</li>
+                <li>Привет, <a href="{{ request.url_for('me', user_id=user.id)}}">{{ user.username }}</a></li>
                 <li><a href="{{ request.url_for('logout') }}">Выход</a></li>
                 {# <li><a href="{{ request.url_for('') }}">Что нужно сделать</a></li> #}
                 {# <li><a href="{{ request.url_for('') }}">Друзья</a></li> #}

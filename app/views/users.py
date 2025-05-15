@@ -35,17 +35,15 @@ logging.getLogger().addHandler(token_handler)
 @router.get(
     "/logout",
     response_class=HTMLResponse,
-    name="logout"
+    name="logout",
 )
 async def user_logout(request: Request):
-    async with httpx.AsyncClient(base_url=str(request.base_url)) as client:
-        response = await client.post(url="/api/ticket/v1/cookie/logout")
-        if response.status_code == 200:
-            rederict = RedirectResponse(
-                url="/",
-                status_code=HTTP_303_SEE_OTHER,
-            )
-            return rederict
+    response = RedirectResponse(
+        url="/",
+        status_code=HTTP_303_SEE_OTHER,
+    )
+    response.delete_cookie("my_auth_cookie")
+    return response
 
 
 @router.get("/")
